@@ -7,7 +7,6 @@
 #include "level.h"
 
 #include <string>
-
 #include <iostream>
 
 #define ANNOUNCE_HEIGHT 5
@@ -63,8 +62,8 @@ bool canSee(int startX, int startY, int endX, int endY, int range)
 	//Based on diagonal cost being sqrt(2)
 	int xDist, yDist;
 	double totDist;
-	xDist = abs(Player.getXPos() - targ->getXPos());
-	yDist = abs(Player.getYPos() - targ->getYPos());
+	xDist = abs(startX - endX);
+	yDist = abs(startY - endY);
 	totDist = sqrt( (double)((xDist*xDist) + (yDist*yDist)) );
 	
 	if( totDist > range )
@@ -85,6 +84,7 @@ bool canSee(int startX, int startY, int endX, int endY, int range)
 }
 
 
+//generic one-size-fits-all AI routine for now
 //For each enemy, attacks if possible. Moves closer if can see the player. Moves randomly throughout the map if can't see player
 void resolveAI()
 {
@@ -104,6 +104,7 @@ void resolveAI()
 		if( !targ->equals(&Dummy) )
 		{
 
+			//these should all be part of the canSee when moved to cCreature class
 			int linex = targ->getXPos();
 			int liney = targ->getYPos();
 			int range = targ->getSightRange();
