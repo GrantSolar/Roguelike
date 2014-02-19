@@ -300,6 +300,9 @@ void endGame()
 
 int main()
 {
+
+	init();
+	
 	Dummy.setID(-1);
 
 	//Input variables
