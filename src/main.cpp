@@ -284,6 +284,20 @@ void init()
 }
 
 
+//End of game, inform player and show credits in accordance to libtcod licensing
+void endGame()
+{
+	TCODConsole::root->clear();
+
+	TCODConsole::root->printRect(MAP_WIDTH/2, MAP_HEIGHT/2, 15, 1, "fin");
+	TCODConsole::root->flush();
+	TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
+
+	TCODConsole::credits();
+	TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
+}
+
+
 int main()
 {
 	Dummy.setID(-1);
@@ -384,16 +398,7 @@ int main()
 
 	}
 	
-	//End of game, inform player and show credits in accordance to libtcod licensing
-	TCODConsole::root->clear();
-
-
-	TCODConsole::root->printRect(MAP_WIDTH/2, MAP_HEIGHT/2, 15, 1, "fin");
-	TCODConsole::root->flush();
-	TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
-
-	TCODConsole::credits();
-	TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
+	endGame();
 
 	return 0;
 }
