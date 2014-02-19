@@ -74,11 +74,11 @@ bool canSee(int startX, int startY, int endX, int endY, int range)
 	//Iterates along line from target to player, for a more efficient field-of-vision
 	do
 	{
-		if(levels[Player.getDepth()].atMap[linex][liney].isTransparent() == false)
+		if(levels[Player.getDepth()].atMap[startX][startY].isTransparent() == false)
 		{
 			return false;
 		}
-	} while( !TCODLine::step(&linex, &liney) );
+	} while( !TCODLine::step(&startX, &startY) );
 	
 	return true;
 }
@@ -285,7 +285,7 @@ void init()
 
 
 //End of game, inform player and show credits in accordance to libtcod licensing
-void endGame()
+/*void endGame()
 {
 	TCODConsole::root->clear();
 
@@ -295,7 +295,7 @@ void endGame()
 
 	TCODConsole::credits();
 	TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
-}
+}*/
 
 
 int main()
@@ -401,7 +401,15 @@ int main()
 
 	}
 	
-	endGame();
+	TCODConsole::root->clear();
+
+	TCODConsole::root->printRect(MAP_WIDTH/2, MAP_HEIGHT/2, 15, 1, "fin");
+	TCODConsole::root->flush();
+	TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
+
+	TCODConsole::credits();
+	TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
+
 
 	return 0;
 }
