@@ -264,11 +264,11 @@ void handleKeys(TCOD_key_t k, TCODRandom *RNG)
 		}
 }
 
-int main()
-{
-	Dummy.setID(-1);
 
-	//Initialise graphics and display settings
+//Initialise graphics and display settings
+//posibly adapt later to allow choice of fonts
+void init()
+{
 	TCODConsole::setCustomFont("arial10x10.png",TCOD_FONT_LAYOUT_TCOD | TCOD_FONT_TYPE_GREYSCALE);
 	TCODConsole::initRoot( SCREEN_WIDTH, SCREEN_HEIGHT, "Rapscallion", false);
 	TCODSystem::setFps(30);
@@ -281,14 +281,18 @@ int main()
 	mapScreen->clear();
 
 	TCODConsole::setColorControl(TCOD_COLCTRL_1, TCODColor::green, TCODColor::red);
+}
+
+
+int main()
+{
+	Dummy.setID(-1);
 
 	//Input variables
 	TCOD_key_t key;
 	TCOD_mouse_t mouse;
 	int oldX = 0;
 	int oldY = 0;
-
-	pathMade = false;
 
 	//Initialise number generator
 	TCODRandom *PRNG = TCODRandom::getInstance();
@@ -297,6 +301,8 @@ int main()
 	//Start game, generating map and displaying to the player
 	firstMap(PRNG);
 
+	pathMade = false;
+	
 	calcFOV(mapScreen);
 	draw(pathMade, 0);
 
