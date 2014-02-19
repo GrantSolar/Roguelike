@@ -55,11 +55,42 @@ void getTarget(int x, int y)
 }
 
 
+//quick check to see if item in line of sight
+//should move this to creature member function, but just trying to get functional right now
+//should remove references to Player
+bool canSee(int startX, int startY, int endX, int endY, int range)
+{
+	//Based on diagonal cost being sqrt(2)
+	int xDist, yDist;
+	double totDist;
+	xDist = abs(Player.getXPos() - targ->getXPos());
+	yDist = abs(Player.getYPos() - targ->getYPos());
+	totDist = sqrt( (double)((xDist*xDist) + (yDist*yDist)) );
+	
+	if( totDist > range )
+		return false;
+	
+	TCODLine::init(startX, startY, endX, endY);
+
+	//Iterates along line from target to player, for a more efficient field-of-vision
+	do
+	{
+		if(levels[Player.getDepth()].atMap[linex][liney].isTransparent() == false)
+		{
+			return false;
+		}
+	} while( !TCODLine::step(&linex, &liney) );
+	
+	return true;
+}
+
+
 //For each enemy, attacks if possible. Moves closer if can see the player. Moves randomly throughout the map if can't see player
 void resolveAI()
 {
 
 	//Generate map of permissibility for enemies
+	//should be calculated once and kept in level struct
 	TCODMap *map = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
@@ -72,60 +103,31 @@ void resolveAI()
 	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
 		if( !targ->equals(&Dummy) )
 		{
-			//Based on diagonal cost being sqrt(2)
-			int xDist, yDist;
-			double totDist;
-			xDist = abs(Player.getXPos() - targ->getXPos());
-			yDist = abs(Player.getYPos() - targ->getYPos());
-			totDist = sqrt( (double)((xDist*xDist) + (yDist*yDist)) );
 
-			if( totDist < targ->getSightRange() )
+			int linex = targ->getXPos();
+			int liney = targ->getYPos();
+			int range = targ->getSightRange();
+			
+			bool visible = canSee(linex, liney, Player.getXPos(), Player.getYPos(), range);
+			
+			//If enemy sees player, compute shortest path to player and try to attack
+			if(visible)
 			{
-				bool blocked = false;
-				int linex = targ->getXPos();
-				int liney = targ->getYPos();
-				TCODLine::init(linex, liney, Player.getXPos(), Player.getYPos());
-
-				//Iterates along line from target to player, for a more efficient field-of-vision
-				do
-				{
-					if(levels[Player.getDepth()].atMap[linex][liney].isTransparent() == false)
-					{
-						blocked = true;
-						break;
-					}
-				} while( !TCODLine::step(&linex, &liney) );
+				path->compute(targ->getXPos(), targ->getYPos(), Player.getXPos(), Player.getYPos());
+				int pathx, pathy;
+				path->walk(&pathx, &pathy, false);
 				
-				//If enemy sees player, compute shortest path to player and try to attack
-				if(blocked == false)
-				{
-					path->compute(targ->getXPos(), targ->getYPos(), Player.getXPos(), Player.getYPos());
-					int pathx, pathy;
-					path->walk(&pathx, &pathy, false);
-					
-					//Attack if close enough
-					if(pathx == Player.getXPos() && pathy == Player.getYPos())
-						targ->attack(&Player);
-					//Else move close
-					else
-					{
-						targ->setXPos(pathx);
-						targ->setYPos(pathy);
-					}
-				}
-				//If enemy can't see player, move randomly about the map
+				//Attack if close enough
+				if(pathx == Player.getXPos() && pathy == Player.getYPos())
+					targ->attack(&Player);
+				//Else move close
 				else
 				{
-					TCODRandom *RNG = TCODRandom::getInstance();
-					int randX, randY;
-					do
-					{
-						randX = RNG->getInt(-1, 1);
-						randY = RNG->getInt(-1, 1);
-					} while( !levels[Player.getDepth()].atMap[targ->getXPos()+randX][targ->getYPos()+randY].isWalkable() );
-					targ->move(randX, randY);
+					targ->setXPos(pathx);
+					targ->setYPos(pathy);
 				}
 			}
+			//If enemy can't see player, move randomly about the map
 			else
 			{
 				TCODRandom *RNG = TCODRandom::getInstance();
@@ -137,6 +139,7 @@ void resolveAI()
 				} while( !levels[Player.getDepth()].atMap[targ->getXPos()+randX][targ->getYPos()+randY].isWalkable() );
 				targ->move(randX, randY);
 			}
+
 		}
 }
 
