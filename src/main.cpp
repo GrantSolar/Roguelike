@@ -14,7 +14,16 @@
 #define SCREEN_WIDTH MAP_WIDTH+STATS_WIDTH
 #define SCREEN_HEIGHT MAP_HEIGHT+ANNOUNCE_HEIGHT
 
-
+/*
+	layout of TCODConsoles
+	-----------------
+	|			| s |
+	|	map		| t |
+	|			| a	|
+	|-----------| t	|
+	|  announce | s	|
+	-----------------
+*/
 
 TCODConsole *mapScreen = new TCODConsole( MAP_WIDTH, MAP_HEIGHT );
 TCODConsole *announce = new TCODConsole( MAP_WIDTH, ANNOUNCE_HEIGHT );
@@ -27,6 +36,8 @@ bool pathMade;
 bool torch = false;
 bool movedorattacked = false;
 bool interrupt = false;
+
+//pointer to RNG and current level should be global to avoid huge lines and always passing *RNG
 
 
 //Clears announcement panel of screen, then blits new message
