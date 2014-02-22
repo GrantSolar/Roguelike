@@ -107,7 +107,6 @@ void resolveAI()
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
 		map->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), levels[Player.getDepth()].atMap[iii][jjj].isWalkable());
 	TCODPath *path = new TCODPath(map);
-	delete map;
 	
 	std::list<cCreature>::iterator targ;
 
@@ -152,6 +151,11 @@ void resolveAI()
 				targ->move(randX, randY);
 			}
 
+		}
+		else
+		{
+			//pretty sure it's never Dummy
+			std::cout<<"Dummy target. ID: "<<targ->getID()<<std::endl;
 		}
 }
 
