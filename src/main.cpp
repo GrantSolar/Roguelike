@@ -65,34 +65,6 @@ void getTarget(int x, int y)
 }
 
 
-//quick check to see if item in line of sight
-//should move this to creature member function, but just trying to get functional right now
-//should remove references to Player
-bool canSee(int startX, int startY, int endX, int endY, int range)
-{
-	//Based on diagonal cost being sqrt(2)
-	int xDist, yDist;
-	double totDist;
-	xDist = abs(startX - endX);
-	yDist = abs(startY - endY);
-	totDist = sqrt( (double)((xDist*xDist) + (yDist*yDist)) );
-	
-	if( totDist > range )
-		return false;
-	
-	TCODLine::init(startX, startY, endX, endY);
-
-	//Iterates along line from target to player, for a more efficient field-of-vision
-	do
-	{
-		if(levels[Player.getDepth()].atMap[startX][startY].isTransparent() == false)
-		{
-			return false;
-		}
-	} while( !TCODLine::step(&startX, &startY) );
-	
-	return true;
-}
 
 
 //generic one-size-fits-all AI routine for now
@@ -119,8 +91,9 @@ void resolveAI()
 			int liney = targ->getYPos();
 			int range = targ->getSightRange();
 			
-			bool visible = canSee(linex, liney, Player.getXPos(), Player.getYPos(), range);
-			
+			//bool visible = canSee(linex, liney, Player.getXPos(), Player.getYPos(), range);
+			bool visible = targ->canSee(Player.getXPos(), Player.getYPos());
+
 			//If enemy sees player, compute shortest path to player and try to attack
 			if(visible)
 			{

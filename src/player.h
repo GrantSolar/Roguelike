@@ -65,6 +65,8 @@ class cCreature
 		bool equals(cCreature *op);
 
 		void move(int dx, int dy);
+
+		bool canSee(int x, int y);
 };
 
 class cPlayer : public cCreature

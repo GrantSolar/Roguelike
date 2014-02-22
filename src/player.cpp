@@ -112,6 +112,37 @@ void cCreature::move(int dx, int dy)
 	m_nYPos += dy;
 }
 
+//quick check to see if item in line of sight
+//should move this to creature member function, but just trying to get functional right now
+//should remove references to Player
+bool cCreature::canSee(int x, int y)
+{
+	//Based on diagonal cost being sqrt(2)
+	int xDist, yDist;
+	double totDist;
+	xDist = abs(m_nXPos - x);
+	yDist = abs(m_nYPos - y);
+	totDist = sqrt( (double)((xDist*xDist) + (yDist*yDist)) );
+	
+	if( totDist > m_nSightRange )
+		return false;
+	
+	TCODLine::init(m_nXPos, m_nYPos, x, y);
+
+	int xPos = m_nXPos;
+	int yPos = m_nYPos;
+	//Iterates along line from target to player, for a more efficient field-of-vision
+	do
+	{
+		if(levels[Player.getDepth()].atMap[m_nXPos][m_nYPos].isTransparent() == false)
+		{
+			return false;
+		}
+	} while( !TCODLine::step(&xPos, &yPos) );
+	
+	return true;
+}
+
 cPlayer::cPlayer()
 {
 	m_nDepth = 0;
