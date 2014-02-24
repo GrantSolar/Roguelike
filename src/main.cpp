@@ -86,12 +86,6 @@ void resolveAI()
 		if( !targ->equals(&Dummy) )
 		{
 
-			//these should all be part of the canSee when moved to cCreature class
-			int linex = targ->getXPos();
-			int liney = targ->getYPos();
-			int range = targ->getSightRange();
-			
-			//bool visible = canSee(linex, liney, Player.getXPos(), Player.getYPos(), range);
 			bool visible = targ->canSee(Player.getXPos(), Player.getYPos());
 
 			//If enemy sees player, compute shortest path to player and try to attack
