@@ -132,6 +132,20 @@ void bspMap(TCODRandom *RNG)
 	map->traversePreOrder(new callBack(), NULL);
 }
 
+//Iterates through square with center of (x, y), counting wall tiles
+//Size of square is 2*radius + 1
+int wallsInRadius(int x, int y, int radius)
+{
+	int nWalls = 0;
+	for(int ySurround = radius * (-1); ySurround <= radius; ySurround++)
+	for(int ySurround = radius * (-1); ySurround <= radius; ySurround++)
+	{
+		if(levels[Player.getDepth()].atMap[y + ySurround][x + xSurround].equals(tWall))
+			nWalls++;
+	}
+	return nWalls;
+}
+
 //For cellular automata method
 //Checks number of adjacent wall tiles for each map cell (excl. edges which are always walls)
 //If below threshold (5), sets to floor tile else sets to wall tile
@@ -158,14 +172,7 @@ void origSmooth()
 	for(int iii = 1; iii < MAP_WIDTH-1; iii++)
 	for(int jjj = 1; jjj < MAP_HEIGHT-1; jjj++)
 	{
-		nWalls = 0;
-		//Iterates through 3x3 square of adjacent cells, counting wall tiles
-		for(int ySurround = -1; ySurround <= 1; ySurround++)
-		for(int xSurround = -1; xSurround <= 1; xSurround++)
-		{
-			if(levels[Player.getDepth()].atMap[iii + ySurround][jjj + xSurround].equals(tWall) )
-				nWalls++;
-		}
+		nWalls = wallsInRadius(jjj, iii, 1);
 		
 		if(nWalls < 5)
 			aoTempCave[iii][jjj] = tFloor;
@@ -209,24 +216,9 @@ void smooth()
 	for(int iii = 1; iii < MAP_WIDTH-1; iii++)
 	for(int jjj = 1; jjj < MAP_HEIGHT-1; jjj++)
 	{
-		nWallsR1 = 0;
-		nWallsR2 = 0;
 
-		//Iterates through 3x3 square of adjacent cells, counting wall tiles
-		for(int ySurround = -1; ySurround <= 1; ySurround++)
-		for(int xSurround = -1; xSurround <= 1; xSurround++)
-		{
-			if( levels[Player.getDepth()].atMap[iii + ySurround][jjj + xSurround].equals(tWall) )
-				nWallsR1++;
-		}
-		
-		//Iterates through 5x5 square of surrounding cells, counting wall tiles
-		for(int ySurround = -2; ySurround <= 2; ySurround++)
-		for(int xSurround = -2; xSurround <= 2; xSurround++)
-		{
-			if( levels[Player.getDepth()].atMap[iii + ySurround][jjj + xSurround].equals(tWall) )
-				nWallsR2++;
-		}
+		nWallsR1 = wallsInRadius(jjj, iii, 1);
+		nWallsR2 = wallsInRadius(jjj, iii, 2);
 
 		if(nWallsR1 >= 5 || nWallsR2 <= 2)
 		{
