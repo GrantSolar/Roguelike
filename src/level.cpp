@@ -2,6 +2,8 @@
 #include "tile.h"
 #include "main.h"
 
+#include <iostream>
+
 Level levels[MAX_LEVELS];
 
 //Places between 10 and 25 creatures randomly in level
@@ -137,8 +139,8 @@ void bspMap(TCODRandom *RNG)
 int wallsInRadius(int x, int y, int radius)
 {
 	int nWalls = 0;
-	for(int ySurround = radius * (-1); ySurround <= radius; ySurround++)
-	for(int ySurround = radius * (-1); ySurround <= radius; ySurround++)
+	for(int ySurround = 0 - radius; ySurround <= radius; ySurround++)
+	for(int xSurround = 0 - radius; xSurround <= radius; xSurround++)
 	{
 		if(levels[Player.getDepth()].atMap[y + ySurround][x + xSurround].equals(tWall))
 			nWalls++;
