@@ -313,7 +313,8 @@ int main()
 	levels[Player.getDepth()].Seed = PRNG;
 	
 	//Start game, generating map and displaying to the player
-	firstMap(PRNG);
+//	firstMap(PRNG);
+	newMap(PRNG);
 
 	pathMade = false;
 	

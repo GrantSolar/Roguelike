@@ -20,6 +20,7 @@ typedef struct Level
 		bool generated;
 		bool howlerAlive;
 		TCODMap *CalcMap;
+		TCODMap *PlayerMap;
 
 		std::list<cCreature> monsters;
 		std::list<cWeapon> weapons;
