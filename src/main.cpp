@@ -176,10 +176,19 @@ void attackMove(int xRel, int yRel)
 }
 
 
+//Returns whether mouse cursor is currently on the map
+bool mouseOnMap(TCOD_mouse_t m)
+{
+	return 	(m.cx >= 0) && \
+			(m.cy >= 0) && \
+			(m.cx < MAP_WIDTH) && \
+			(m.cy < MAP_HEIGHT);
+}
+
 //Determines whether or not the previous click was in the same cell
 bool mouseMoved(TCOD_mouse_t m, int x, int y)
 {
-	return (m.cx == x && m.cy == y);
+	return !(m.cx == x && m.cy == y);
 }
 
 
@@ -341,7 +350,7 @@ int main()
 			pathMade = false;
 		}
 		//If left mouse button pressed inside window, calculate path from player to point
-		else if(mouse.cx >= 0 && mouse.cy >= 0 && mouse.cx < MAP_WIDTH && mouse.cy < MAP_HEIGHT && mouse.lbutton)
+		else if(mouseOnMap(mouse) && mouse.lbutton)
 		{
 			oldX = mouse.cx;
 			oldY = mouse.cy;
@@ -363,7 +372,7 @@ int main()
 			}
 		}
 		//If right mouse button pressed in same tile as left button was pressed, auto-move player to that tile
-		else if (mouse.cx >= 0 && mouse.cy >= 0 && mouse.cx < MAP_WIDTH && mouse.cy < MAP_HEIGHT && mouse.rbutton && pathMade && mouseMoved(mouse, oldX, oldY))
+		else if (mouseOnMap(mouse) && mouse.rbutton && pathMade && !mouseMoved(mouse, oldX, oldY))
 		{
 			oldX = mouse.cx;
 			oldY = mouse.cy;
