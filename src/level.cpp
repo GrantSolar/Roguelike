@@ -335,7 +335,7 @@ int findLastY(int x, int y)
 	wallEdges();
 }*/
 
-void firstMap(TCODRandom *RNG)
+/*void firstMap(TCODRandom *RNG)
 {
 	randFillMap(RNG);
 	smooth();
@@ -363,7 +363,7 @@ void firstMap(TCODRandom *RNG)
 	scatterItems(RNG);
 
 	levels[Player.getDepth()].generated = true;
-}
+}*/
 
 void newMap(TCODRandom *RNG)
 {
@@ -371,13 +371,6 @@ void newMap(TCODRandom *RNG)
 	levels[Player.getDepth()].DStairsLoc[0] = 0;
 	levels[Player.getDepth()].DStairsLoc[1] = 0;
 
-	//First map, can place Player anywhere
-	if (Player.getDepth() == 0)
-	{
-		Player.setXPos(RNG->getInt(0, MAP_WIDTH));
-		Player.setYPos(RNG->getInt(0, MAP_HEIGHT));
-	}
-	
 	//Generate map. Keep trying until player location is a walkable tile
 	do
 	{
