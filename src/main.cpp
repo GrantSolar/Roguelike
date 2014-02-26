@@ -308,8 +308,8 @@ int main()
 	
 	//Place the player anywhere. Doesn't matter as level is generated around player
 	//Would be far more efficient to place the player after
-	Player.setXPos(RNG->getInt(0, MAP_WIDTH));
-	Player.setYPos(RNG->getInt(0, MAP_HEIGHT));
+	Player.setXPos(PRNG->getInt(0, MAP_WIDTH));
+	Player.setYPos(PRNG->getInt(0, MAP_HEIGHT));
 	
 	//firstMap(PRNG);
 	newMap(PRNG);
