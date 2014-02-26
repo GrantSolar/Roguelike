@@ -83,47 +83,39 @@ void resolveAI()
 	std::list<cCreature>::iterator targ;
 
 	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
-		if( !targ->equals(&Dummy) )
+	{
+		bool visible = targ->canSee(Player.getXPos(), Player.getYPos());
+
+		//If enemy sees player, compute shortest path to player and try to attack
+		if(visible)
 		{
-
-			bool visible = targ->canSee(Player.getXPos(), Player.getYPos());
-
-			//If enemy sees player, compute shortest path to player and try to attack
-			if(visible)
-			{
-				path->compute(targ->getXPos(), targ->getYPos(), Player.getXPos(), Player.getYPos());
-				int pathx, pathy;
-				path->walk(&pathx, &pathy, false);
-				
-				//Attack if close enough
-				if(pathx == Player.getXPos() && pathy == Player.getYPos())
-					targ->attack(&Player);
-				//Else move close
-				else
-				{
-					targ->setXPos(pathx);
-					targ->setYPos(pathy);
-				}
-			}
-			//If enemy can't see player, move randomly about the map
+			path->compute(targ->getXPos(), targ->getYPos(), Player.getXPos(), Player.getYPos());
+			int pathx, pathy;
+			path->walk(&pathx, &pathy, false);
+			
+			//Attack if close enough
+			if(pathx == Player.getXPos() && pathy == Player.getYPos())
+				targ->attack(&Player);
+			//Else move close
 			else
 			{
-				TCODRandom *RNG = TCODRandom::getInstance();
-				int randX, randY;
-				do
-				{
-					randX = RNG->getInt(-1, 1);
-					randY = RNG->getInt(-1, 1);
-				} while( !levels[Player.getDepth()].atMap[targ->getXPos()+randX][targ->getYPos()+randY].isWalkable() );
-				targ->move(randX, randY);
+				targ->setXPos(pathx);
+				targ->setYPos(pathy);
 			}
-
 		}
+		//If enemy can't see player, move randomly about the map
 		else
 		{
-			//pretty sure it's never Dummy
-			std::cout<<"Dummy target. ID: "<<targ->getID()<<std::endl;
+			TCODRandom *RNG = TCODRandom::getInstance();
+			int randX, randY;
+			do
+			{
+				randX = RNG->getInt(-1, 1);
+				randY = RNG->getInt(-1, 1);
+			} while( !levels[Player.getDepth()].atMap[targ->getXPos()+randX][targ->getYPos()+randY].isWalkable() );
+			targ->move(randX, randY);
 		}
+	}
 }
 
 
