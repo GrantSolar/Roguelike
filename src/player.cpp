@@ -9,6 +9,21 @@
 cNPC::cNPC()			{}
 void cNPC::runAI()	{}
 
+void cNPC::die() override
+{
+	this.remove();
+}
+void cNPC::remove()
+{
+	std::list<cNPC>::iterator targ;
+	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
+		if(this->equals(&*targ))
+		{
+			levels[Player.getDepth()].monsters.erase(targ);
+			break;
+		}
+}
+
 cEntity::cEntity()
 {
 	setXPos(0);
@@ -34,18 +49,6 @@ cEntity::cEntity()
 
 }
 
-//cEntity::~cEntity()
-void cEntity::remove()
-{
-	std::list<cEntity>::iterator targ;
-	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
-		if(this->equals(&*targ))
-		{
-			levels[Player.getDepth()].monsters.erase(targ);
-			break;
-		}
-
-}
 
 //Getters & Setters
 int cEntity::getXPos()			{return m_nXPos;}
@@ -89,7 +92,7 @@ void cEntity::attack(cEntity *attacked)
 
 	if( attacked->getCurrHp() <= 0 )
 	{
-		attacked->remove();
+		attacked->die();
 	}
 }
 
@@ -107,6 +110,11 @@ void cEntity::level_up()
 }
 
 bool cEntity::equals(cEntity *op) {return m_nID == op->m_nID;}
+
+void cEntity::die()
+{
+
+}
 
 //Basic movement, relative to current position
 void cEntity::move(int dx, int dy)

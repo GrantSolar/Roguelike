@@ -20,8 +20,6 @@ class cEntity
 		cWeapon *m_wWeapon;
 		cEntity();
 
-		void remove();
-		
 		//Getters & Setters
 		int getXPos();
 		void setXPos(int x);
@@ -64,6 +62,8 @@ class cEntity
 
 		bool equals(cEntity *op);
 
+		void die();
+
 		void move(int dx, int dy);
 
 		bool canSee(int x, int y);
@@ -75,6 +75,8 @@ class cNPC : public cEntity
 	public:
 		cNPC();
 		virtual void runAI();
+		void remove();
+		void die();
 };
 
 class cPlayer : public cEntity

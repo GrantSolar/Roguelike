@@ -52,7 +52,7 @@ void announcement(const char *message, ...)
 //Finds an enemy at given co-ords, if one exists
 void getTarget(int x, int y)
 {
-	std::list<cEntity>::iterator targ;
+	std::list<cNPC>::iterator targ;
 	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
 		if(targ->getXPos() == x && targ->getYPos() == y)
 		{
@@ -80,7 +80,7 @@ void resolveAI()
 		map->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), levels[Player.getDepth()].atMap[iii][jjj].isWalkable());
 	TCODPath *path = new TCODPath(map);
 	
-	std::list<cEntity>::iterator targ;
+	std::list<cNPC>::iterator targ;
 
 	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
 	{

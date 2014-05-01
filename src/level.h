@@ -22,7 +22,7 @@ typedef struct Level
 		TCODMap *CalcMap;
 		TCODMap *PlayerMap;
 
-		std::list<cEntity> monsters;
+		std::list<cNPC> monsters;
 		std::list<cWeapon> weapons;
 		cEntity howler;
 }Level;

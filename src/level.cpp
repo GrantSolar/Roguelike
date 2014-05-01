@@ -509,7 +509,7 @@ void calcFOVTorch(TCODConsole *screen)
 		}
 	}
 	
-	std::list<cEntity>::iterator monst = levels[Player.getDepth()].monsters.begin();
+	std::list<cNPC>::iterator monst = levels[Player.getDepth()].monsters.begin();
 	while(monst != levels[Player.getDepth()].monsters.end())
 	{
 		if( monst->getCurrHp() > 0)
