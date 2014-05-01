@@ -73,8 +73,9 @@ class cNPC : public cEntity
 {
 
 	public:
+		cNPC();
 		virtual void runAI();
-}
+};
 
 class cPlayer : public cEntity
 {

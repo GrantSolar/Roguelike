@@ -6,8 +6,8 @@
 #include <math.h>
 #include <iostream>
 
-cNPC::cNPC()				{}
-virtual void cNPC::runAI()	{}
+cNPC::cNPC()			{}
+void cNPC::runAI()	{}
 
 cEntity::cEntity()
 {
