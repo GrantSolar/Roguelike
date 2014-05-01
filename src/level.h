@@ -22,9 +22,9 @@ typedef struct Level
 		TCODMap *CalcMap;
 		TCODMap *PlayerMap;
 
-		std::list<cCreature> monsters;
+		std::list<cEntity> monsters;
 		std::list<cWeapon> weapons;
-		cCreature howler;
+		cEntity howler;
 }Level;
 
 void populate(TCODRandom *RNG);

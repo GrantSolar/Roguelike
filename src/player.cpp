@@ -6,7 +6,10 @@
 #include <math.h>
 #include <iostream>
 
-cCreature::cCreature()
+cNPC::cNPC()				{}
+virtual void cNPC::runAI()	{}
+
+cEntity::cEntity()
 {
 	setXPos(0);
 	setYPos(0);
@@ -31,10 +34,10 @@ cCreature::cCreature()
 
 }
 
-//cCreature::~cCreature()
-void cCreature::remove()
+//cEntity::~cEntity()
+void cEntity::remove()
 {
-	std::list<cCreature>::iterator targ;
+	std::list<cEntity>::iterator targ;
 	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
 		if(this->equals(&*targ))
 		{
@@ -45,40 +48,40 @@ void cCreature::remove()
 }
 
 //Getters & Setters
-int cCreature::getXPos()			{return m_nXPos;}
-void cCreature::setXPos(int x)		{m_nXPos = x;}
+int cEntity::getXPos()			{return m_nXPos;}
+void cEntity::setXPos(int x)		{m_nXPos = x;}
 
-int cCreature::getYPos()			{return m_nYPos;}
-void cCreature::setYPos(int y)		{m_nYPos = y;}
+int cEntity::getYPos()			{return m_nYPos;}
+void cEntity::setYPos(int y)		{m_nYPos = y;}
 
-int cCreature::getID()				{return m_nID;}
-void cCreature::setID(int id)		{m_nID = id;}
+int cEntity::getID()				{return m_nID;}
+void cEntity::setID(int id)		{m_nID = id;}
 
-int cCreature::getSightRange()		{return m_nSightRange;}
+int cEntity::getSightRange()		{return m_nSightRange;}
 
-int cCreature::getBaseStrength()	{return m_nBaseStrength;}
-void cCreature::setBaseStrength(int str)	{m_nBaseStrength = str;}
+int cEntity::getBaseStrength()	{return m_nBaseStrength;}
+void cEntity::setBaseStrength(int str)	{m_nBaseStrength = str;}
 
-int cCreature::getStrength()				{return m_nStrength;}
-void cCreature::setStrength(int str)		{m_nStrength = str;}
+int cEntity::getStrength()				{return m_nStrength;}
+void cEntity::setStrength(int str)		{m_nStrength = str;}
 
-int cCreature::getBaseDefence()		{return m_nBaseDefence;}
-void cCreature::setBaseDefence(int def)		{m_nBaseDefence = def;}
+int cEntity::getBaseDefence()		{return m_nBaseDefence;}
+void cEntity::setBaseDefence(int def)		{m_nBaseDefence = def;}
 
-int cCreature::getDefence()			{return m_nDefence;}
-void cCreature::setDefence(int def)	{m_nDefence = def;}
+int cEntity::getDefence()			{return m_nDefence;}
+void cEntity::setDefence(int def)	{m_nDefence = def;}
 
-int cCreature::getBaseHp()			{return m_nBaseHp;}
-void cCreature::setBaseHp(int hp)	{m_nBaseHp = hp;}
+int cEntity::getBaseHp()			{return m_nBaseHp;}
+void cEntity::setBaseHp(int hp)	{m_nBaseHp = hp;}
 
-int cCreature::getCurrHp()			{return m_nCurrHp;}
-void cCreature::setCurrHp(int hp)	{m_nCurrHp = hp;}
-int cCreature::getMaxHp()			{return m_nMaxHp;}
-void cCreature::setMaxHp(int hp)	{m_nMaxHp = hp;}
-void cCreature::adjHp(int x)		{m_nCurrHp += x;}
+int cEntity::getCurrHp()			{return m_nCurrHp;}
+void cEntity::setCurrHp(int hp)	{m_nCurrHp = hp;}
+int cEntity::getMaxHp()			{return m_nMaxHp;}
+void cEntity::setMaxHp(int hp)	{m_nMaxHp = hp;}
+void cEntity::adjHp(int x)		{m_nCurrHp += x;}
 
 //Reduces target health
-void cCreature::attack(cCreature *attacked)
+void cEntity::attack(cEntity *attacked)
 {
 	attacked->adjHp(-1);
 	interrupt = true;
@@ -90,11 +93,11 @@ void cCreature::attack(cCreature *attacked)
 	}
 }
 
-int cCreature::getLevel()			{return m_nLevel;}
-void cCreature::setLevel(int level)	{m_nLevel = level;}
+int cEntity::getLevel()			{return m_nLevel;}
+void cEntity::setLevel(int level)	{m_nLevel = level;}
 
 //Scales a creature's statistics with the experience gained
-void cCreature::level_up()
+void cEntity::level_up()
 {
 	m_nLevel++;
 	m_nMaxHp = ((m_nBaseHp + 50)*m_nLevel)/20 + 10;
@@ -103,10 +106,10 @@ void cCreature::level_up()
 	m_nDefence = ((m_nBaseDefence*m_nLevel)/50) + 5;
 }
 
-bool cCreature::equals(cCreature *op) {return m_nID == op->m_nID;}
+bool cEntity::equals(cEntity *op) {return m_nID == op->m_nID;}
 
 //Basic movement, relative to current position
-void cCreature::move(int dx, int dy)
+void cEntity::move(int dx, int dy)
 {
 	m_nXPos += dx;
 	m_nYPos += dy;
@@ -115,7 +118,7 @@ void cCreature::move(int dx, int dy)
 //quick check to see if item in line of sight
 //should move this to creature member function, but just trying to get functional right now
 //should remove references to Player
-bool cCreature::canSee(int x, int y)
+bool cEntity::canSee(int x, int y)
 {
 	//Based on diagonal cost being sqrt(2)
 	int xDist, yDist;
@@ -174,13 +177,13 @@ void cPlayer::addExp(int exp)	{m_nExp += exp;}
 //Scales up statistics
 void cPlayer::level_up()
 {
-	cCreature::level_up();
+	cEntity::level_up();
 	m_nExp = m_nExp - m_nExpNext;
 	m_nExpNext = (int)pow((double)m_nExpNext, 2) * 4/5;
 }
 
 //Reduces target health
-void cPlayer::attack(cCreature *attacked)
+void cPlayer::attack(cEntity *attacked)
 {
 
 	int dmg = ((2*getLevel() + 10)/250) * (getStrength()/attacked->getDefence()) * getBaseStrength() + 2;
@@ -224,5 +227,5 @@ void cPlayer::pickUp()
 }
 
 cPlayer Player;
-cCreature Dummy;
-cCreature *Target;
+cEntity Dummy;
+cEntity *Target;

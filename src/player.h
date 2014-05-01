@@ -4,7 +4,7 @@
 #include "libtcod.hpp"
 #include "item.h"
 
-class cCreature
+class cEntity
 {
 	private:
 		int m_nXPos, m_nYPos, m_nBaseHp, m_nBaseStrength, m_nBaseDefence, m_nCurrHp, m_nMaxHp, m_nStrength, m_nDefence, m_nLevel, m_nSightRange, m_nID;
@@ -18,7 +18,7 @@ class cCreature
 		bool visible;
 
 		cWeapon *m_wWeapon;
-		cCreature();
+		cEntity();
 
 		void remove();
 		
@@ -56,20 +56,27 @@ class cCreature
 		void setMaxHp(int hp);
 
 		void adjHp(int x);
-		void attack(cCreature *attacked);
+		void attack(cEntity *attacked);
 
 		int getLevel();
 		void setLevel(int level);
 		void level_up();
 
-		bool equals(cCreature *op);
+		bool equals(cEntity *op);
 
 		void move(int dx, int dy);
 
 		bool canSee(int x, int y);
 };
 
-class cPlayer : public cCreature
+class cNPC : public cEntity
+{
+
+	public:
+		virtual void runAI();
+}
+
+class cPlayer : public cEntity
 {
 	private:
 		int m_nDepth, m_nExp, m_nExpNext;
@@ -92,11 +99,11 @@ class cPlayer : public cCreature
 		void addExp(int exp);
 		void level_up();
 
-		void attack(cCreature* attacked);
+		void attack(cEntity* attacked);
 		void pickUp();
 };
 
 extern cPlayer Player;
-extern cCreature Dummy;
-extern cCreature *Target;
+extern cEntity Dummy;
+extern cEntity *Target;
 #endif

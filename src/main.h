@@ -10,5 +10,7 @@ extern TCODConsole *mapScreen;
 extern TCODConsole *announce;
 extern TCODConsole *stats;
 
+extern TCODRandom *PRNG;
+
 extern bool pathMade;
 extern bool interrupt;
