@@ -7,7 +7,41 @@
 #include <iostream>
 
 cNPC::cNPC()			{}
-void cNPC::runAI()	{}
+void cNPC::runAI(TCODPath *path)
+{
+
+		bool visible = this->canSee(Player.getXPos(), Player.getYPos());
+
+		//If enemy sees player, compute shortest path to player and try to attack
+		if(visible)
+		{
+			path->compute(this->getXPos(), this->getYPos(), Player.getXPos(), Player.getYPos());
+			int pathx, pathy;
+			path->walk(&pathx, &pathy, false);
+			
+			//Attack if close enough
+			if(pathx == Player.getXPos() && pathy == Player.getYPos())
+				this->attack(&Player);
+			//Else move close
+			else
+			{
+				this->setXPos(pathx);
+				this->setYPos(pathy);
+			}
+		}
+		//If enemy can't see player, move randomly about the map
+		else
+		{
+			TCODRandom *RNG = TCODRandom::getInstance();
+			int randX, randY;
+			do
+			{
+				randX = RNG->getInt(-1, 1);
+				randY = RNG->getInt(-1, 1);
+			} while( !levels[Player.getDepth()].atMap[this->getXPos()+randX][this->getYPos()+randY].isWalkable() );
+			this->move(randX, randY);
+		}
+}
 
 void cNPC::die()
 {

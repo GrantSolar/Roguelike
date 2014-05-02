@@ -75,7 +75,7 @@ class cNPC : public cEntity
 
 	public:
 		cNPC();
-		virtual void runAI();
+		virtual void runAI(TCODPath *path);
 		void remove();
 		void die();
 };
