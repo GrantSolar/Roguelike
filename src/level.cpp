@@ -13,7 +13,7 @@ void populate(TCODRandom *RNG)
 	int nMonsters = RNG->getInt(10, 25);
 	for(int iii = 0; iii < nMonsters; iii++)
 	{
-		cEntity newMonster;
+		cNPC newMonster;
 		do
 		{
 			newMonster.setXPos(RNG->getInt(0, MAP_WIDTH));
@@ -433,7 +433,7 @@ void calcFOV(TCODConsole *screen)
 
 	
 	//Iterates list of creatures in level and displays if it's in the player's field-of-vision
-	std::list<cEntity>::iterator monst = levels[Player.getDepth()].monsters.begin();
+	std::list<cNPC>::iterator monst = levels[Player.getDepth()].monsters.begin();
 	while(monst != levels[Player.getDepth()].monsters.end())
 	{
 		if( map->isInFov(monst->getXPos(), monst->getYPos()) && monst->getCurrHp() > 0)

@@ -9,9 +9,9 @@
 cNPC::cNPC()			{}
 void cNPC::runAI()	{}
 
-void cNPC::die() override
+void cNPC::die()
 {
-	this.remove();
+	this->remove();
 }
 void cNPC::remove()
 {
@@ -114,6 +114,17 @@ bool cEntity::equals(cEntity *op) {return m_nID == op->m_nID;}
 void cEntity::die()
 {
 
+}
+
+void cEntity::remove()
+{
+	std::list<cNPC>::iterator targ;
+	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
+		if(this->equals(&*targ))
+		{
+			levels[Player.getDepth()].monsters.erase(targ);
+			break;
+		}
 }
 
 //Basic movement, relative to current position

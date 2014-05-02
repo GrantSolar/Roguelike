@@ -62,7 +62,8 @@ class cEntity
 
 		bool equals(cEntity *op);
 
-		void die();
+		virtual void die();
+		void remove();
 
 		void move(int dx, int dy);
 
