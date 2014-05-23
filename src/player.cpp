@@ -1,7 +1,6 @@
 #include "player.h"
 #include "level.h"
 #include "item.h"
-//#include "items.h"
 #include "main.h"
 #include <math.h>
 #include <iostream>

@@ -42,3 +42,4 @@ int cWeapon::getLow()		{return m_nAttackLow;}
 int cWeapon::getHigh()		{return m_nAttackHigh;}
 
 int cWeapon::attackDamage(TCODRandom *RNG)	{return RNG->getInt(m_nAttackLow, m_nAttackHigh);}
+extern cWeapon allWeaps[] = { cWeapon(1, 2, "Fists"), cWeapon(3, 4, "Dagger"), cWeapon(2, 5, "Club"), cWeapon(4, 7, "Short Sword"), cWeapon(5, 10, "Axe")};
