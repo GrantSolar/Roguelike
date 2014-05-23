@@ -6,7 +6,7 @@
 #include <iostream>
 
 cNPC::cNPC()			{}
-void cNPC::runAI(TCODPath *path)
+void cNPC::runAI()
 {
 
 		bool visible = this->canSee(Player.getXPos(), Player.getYPos());
@@ -14,9 +14,9 @@ void cNPC::runAI(TCODPath *path)
 		//If enemy sees player, compute shortest path to player and try to attack
 		if(visible)
 		{
-			path->compute(this->getXPos(), this->getYPos(), Player.getXPos(), Player.getYPos());
+			levels[Player.getDepth()].CalcPath->compute(this->getXPos(), this->getYPos(), Player.getXPos(), Player.getYPos());
 			int pathx, pathy;
-			path->walk(&pathx, &pathy, false);
+			levels[Player.getDepth()].CalcPath->walk(&pathx, &pathy, false);
 			
 			//Attack if close enough
 			if(pathx == Player.getXPos() && pathy == Player.getYPos())

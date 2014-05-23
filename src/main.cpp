@@ -76,7 +76,7 @@ void resolveAI()
 
 	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
 	{
-		targ->runAI(path);
+		targ->runAI();
 	}
 }
 

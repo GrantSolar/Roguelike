@@ -372,6 +372,7 @@ void newMap(TCODRandom *RNG)
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
 		levels[Player.getDepth()].CalcMap->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), levels[Player.getDepth()].atMap[iii][jjj].isWalkable());
 
+	levels[Player.getDepth()].CalcPath = new TCODPath(levels[Player.getDepth()].CalcMap);
 	populate(RNG);
 
 	levels[Player.getDepth()].generated = true;
