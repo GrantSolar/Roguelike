@@ -71,15 +71,7 @@ void getTarget(int x, int y)
 //For each enemy, attacks if possible. Moves closer if can see the player. Moves randomly throughout the map if can't see player
 void resolveAI()
 {
-
-	//Generate map of permissibility for enemies
-	//should be calculated once and kept in level struct
-	TCODMap *map = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
-	for(int iii = 0; iii < MAP_WIDTH; iii++)
-	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-		map->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), levels[Player.getDepth()].atMap[iii][jjj].isWalkable());
-	TCODPath *path = new TCODPath(map);
-	
+	TCODPath *path = new TCODPath(levels[Player.getDepth()].CalcMap);
 	std::list<cNPC>::iterator targ;
 
 	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)

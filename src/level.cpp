@@ -335,35 +335,6 @@ int findLastY(int x, int y)
 	wallEdges();
 }*/
 
-/*void firstMap(TCODRandom *RNG)
-{
-	randFillMap(RNG);
-	smooth();
-	smooth();
-	origSmooth();
-	smooth();
-	origSmooth();
-
-	levels[Player.getDepth()].howlerAlive = true;
-	
-	while( !levels[Player.getDepth()].atMap[levels[Player.getDepth()].DStairsLoc[0]][levels[Player.getDepth()].DStairsLoc[1]].equals(tFloor) )
-	{
-		levels[Player.getDepth()].DStairsLoc[0] = RNG->getInt(0, MAP_WIDTH);
-		levels[Player.getDepth()].DStairsLoc[1] = RNG->getInt(0, MAP_HEIGHT);
-	}
-	levels[Player.getDepth()].atMap[levels[Player.getDepth()].DStairsLoc[0]][levels[Player.getDepth()].DStairsLoc[1]] = tDStairs;
-
-	while( !levels[Player.getDepth()].atMap[Player.getXPos()][Player.getYPos()].isWalkable() )
-	{
-		Player.setXPos(RNG->getInt(0, MAP_WIDTH));
-		Player.setYPos(RNG->getInt(0, MAP_HEIGHT));
-	}
-
-	populate(RNG);
-	scatterItems(RNG);
-
-	levels[Player.getDepth()].generated = true;
-}*/
 
 void newMap(TCODRandom *RNG)
 {
@@ -382,16 +353,24 @@ void newMap(TCODRandom *RNG)
 		origSmooth();
 	} while(!levels[Player.getDepth()].atMap[Player.getXPos()][Player.getYPos()].isWalkable());
 
+	//Position upwards stairs at current player position
 	levels[Player.getDepth()].atMap[Player.getXPos()][Player.getYPos()] = tUStairs;
 	levels[Player.getDepth()].UStairsLoc[0] = Player.getXPos();
 	levels[Player.getDepth()].UStairsLoc[1] = Player.getYPos();
 	
+	//Place downwards stairs on random floor tile
 	while( !levels[Player.getDepth()].atMap[levels[Player.getDepth()].DStairsLoc[0]][levels[Player.getDepth()].DStairsLoc[1]].equals(tFloor) )
 	{
 		levels[Player.getDepth()].DStairsLoc[0] = RNG->getInt(0, MAP_WIDTH);
 		levels[Player.getDepth()].DStairsLoc[1] = RNG->getInt(0, MAP_HEIGHT);
 	}
 	levels[Player.getDepth()].atMap[levels[Player.getDepth()].DStairsLoc[0]][levels[Player.getDepth()].DStairsLoc[1]] = tDStairs;
+
+	//Generate map of permissibility for enemies
+	levels[Player.getDepth()].CalcMap = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
+	for(int iii = 0; iii < MAP_WIDTH; iii++)
+	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
+		levels[Player.getDepth()].CalcMap->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), levels[Player.getDepth()].atMap[iii][jjj].isWalkable());
 
 	populate(RNG);
 
