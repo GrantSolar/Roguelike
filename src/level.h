@@ -19,8 +19,14 @@ typedef struct Level
 		cTile atMap[MAP_WIDTH][MAP_HEIGHT];
 		bool generated;
 		bool howlerAlive;
+
+		//Uses full information of level
 		TCODMap *CalcMap;
+		TCODPath *CalcPath;
+
+		//Based on player's knowledge of the levek
 		TCODMap *PlayerMap;
+		TCODPath *PlayerPath;
 
 		std::list<cNPC> monsters;
 		std::list<cWeapon> weapons;
