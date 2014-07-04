@@ -315,7 +315,14 @@ int main()
 				TCODMap *map = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 				for(int iii = 0; iii < MAP_WIDTH; iii++)
 					for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-						map->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), levels[Player.getDepth()].atMap[iii][jjj].isWalkable());
+						if(levels[Player.getDepth()].atMap[iii][jjj].isDiscovered())
+						{
+							map->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), levels[Player.getDepth()].atMap[iii][jjj].isWalkable());
+						}
+						else
+						{
+							map->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), false);
+						}
 				path = new TCODPath(map);
 
 				path->compute(Player.getXPos(), Player.getYPos(), mouse.cx, mouse.cy);
@@ -357,8 +364,8 @@ int main()
 	TCODConsole::root->flush();
 	TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
 
-	TCODConsole::credits();
-	TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
+	//TCODConsole::credits();
+	//TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
 
 
 	return 0;
