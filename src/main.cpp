@@ -190,6 +190,7 @@ void handleKeys(TCOD_key_t k, TCODRandom *RNG)
 				if( Player.getXPos() == levels[Player.getDepth()].DStairsLoc[0] && Player.getYPos() == levels[Player.getDepth()].DStairsLoc[1] )
 				{
 					Player.descend();
+					level = &levels[Player.getDepth()];
 					if(!levels[Player.getDepth()].generated)
 					{	
 						newMap(level, RNG);
@@ -202,6 +203,7 @@ void handleKeys(TCOD_key_t k, TCODRandom *RNG)
 				if( Player.getXPos() == levels[Player.getDepth()].UStairsLoc[0] && Player.getYPos() == levels[Player.getDepth()].UStairsLoc[1] )
 				{
 					Player.ascend();
+					level = &levels[Player.getDepth()];
 					mapScreen->clear();
 				}
 				break;
