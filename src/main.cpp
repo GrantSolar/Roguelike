@@ -311,20 +311,20 @@ int main()
 			oldX = mouse.cx;
 			oldY = mouse.cy;
 
-			if( !(levels[Player.getDepth()].atMap[mouse.cx][mouse.cy].equals(tWall)) && levels[Player.getDepth()].atMap[mouse.cx][mouse.cy].isDiscovered() )
+			if( !(level->atMap[mouse.cx][mouse.cy].equals(tWall)) && level->atMap[mouse.cx][mouse.cy].isDiscovered() )
 			{
 				
 				//Calculate path from player position to mouse position
 				TCODMap *map = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 				for(int iii = 0; iii < MAP_WIDTH; iii++)
 					for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-						if(levels[Player.getDepth()].atMap[iii][jjj].isDiscovered())
+						if(level->atMap[iii][jjj].isDiscovered())
 						{
-							map->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), levels[Player.getDepth()].atMap[iii][jjj].isWalkable());
+							map->setProperties(iii, jjj, level->atMap[iii][jjj].isTransparent(), level->atMap[iii][jjj].isWalkable());
 						}
 						else
 						{
-							map->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), false);
+							map->setProperties(iii, jjj, level->atMap[iii][jjj].isTransparent(), false);
 						}
 				path = new TCODPath(map);
 
@@ -348,9 +348,9 @@ int main()
 
 				resolveAI();
 
-				int x,y;
-				path->get(i,&x,&y);
-				attackMove(x-Player.getXPos(), y-Player.getYPos());
+				int x, y;
+				path->get(i, &x, &y);
+				attackMove(x - Player.getXPos(), y - Player.getYPos());
 				calcFOV(level, mapScreen);
 
 				draw(pathMade, i);
@@ -363,7 +363,7 @@ int main()
 	
 	TCODConsole::root->clear();
 
-	TCODConsole::root->printRect(MAP_WIDTH/2, MAP_HEIGHT/2, 15, 1, "fin");
+	TCODConsole::root->printRect( (MAP_WIDTH+STATS_WIDTH)/2, MAP_HEIGHT/2, 15, 1, "fin");
 	TCODConsole::root->flush();
 	TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
 
