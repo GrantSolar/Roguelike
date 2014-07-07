@@ -31,6 +31,8 @@ TCODConsole *stats = new TCODConsole( STATS_WIDTH, SCREEN_HEIGHT );
 
 TCODPath *path;
 
+Level *level = &levels[Player.getDepth()];
+
 bool pathMade;
 
 bool torch = false;
@@ -190,7 +192,7 @@ void handleKeys(TCOD_key_t k, TCODRandom *RNG)
 					Player.descend();
 					if(!levels[Player.getDepth()].generated)
 					{	
-						newMap(RNG);
+						newMap(level, RNG);
 					}
 					mapScreen->clear();
 				}
@@ -259,6 +261,7 @@ int main()
 	//Initialise number generator
 	TCODRandom *PRNG = TCODRandom::getInstance();
 	levels[Player.getDepth()].Seed = PRNG;
+	//level->Seed = PRNG;
 	
 	//Place the player anywhere. Doesn't matter as level is generated around player
 	//Would be far more efficient to place the player after
@@ -266,11 +269,11 @@ int main()
 	Player.setYPos(PRNG->getInt(0, MAP_HEIGHT));
 	
 	//firstMap(PRNG);
-	newMap(PRNG);
+	newMap(level, PRNG);
 
 	pathMade = false;
 	
-	calcFOV(mapScreen);
+	calcFOV(level, mapScreen);
 	draw(pathMade, 0);
 
 	//Game loop - handles input, display and resolves AI
@@ -290,7 +293,7 @@ int main()
 
 		//Update screen
 		mapScreen->clear();
-		calcFOV(mapScreen);
+		calcFOV(level, mapScreen);
 		draw(pathMade, 0);
 
 		//Blocking key input
@@ -348,7 +351,7 @@ int main()
 				int x,y;
 				path->get(i,&x,&y);
 				attackMove(x-Player.getXPos(), y-Player.getYPos());
-				calcFOV(mapScreen);
+				calcFOV(level, mapScreen);
 
 				draw(pathMade, i);
 			}

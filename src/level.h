@@ -47,8 +47,8 @@ int findLastY(int x, int y);
 void addRoom(TCODRandom *RNG);
 void altRooms();
 //void firstMap(TCODRandom *RNG);
-void newMap(TCODRandom *RNG);
-void calcFOV(TCODConsole *screen);
+void newMap(Level *level, TCODRandom *RNG);
+void calcFOV(Level *level, TCODConsole *screen);
 void calcFOVTorch(TCODConsole *screen);
 
 extern Level levels[MAX_LEVELS];

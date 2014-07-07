@@ -7,7 +7,7 @@
 Level levels[MAX_LEVELS];
 
 //Places between 10 and 25 creatures randomly in level
-void populate(TCODRandom *RNG)
+void populate(Level *level, TCODRandom *RNG)
 {
 	int ID = 0;
 	int nMonsters = RNG->getInt(10, 25);
@@ -18,9 +18,9 @@ void populate(TCODRandom *RNG)
 		{
 			newMonster.setXPos(RNG->getInt(0, MAP_WIDTH));
 			newMonster.setYPos(RNG->getInt(0, MAP_HEIGHT));
-		} while( levels[Player.getDepth()].atMap[newMonster.getXPos()][newMonster.getYPos()].equals(tWall) );
+		} while( level->atMap[newMonster.getXPos()][newMonster.getYPos()].equals(tWall) );
 		newMonster.setID(ID++);
-		levels[Player.getDepth()].monsters.push_back(newMonster);
+		level->monsters.push_back(newMonster);
 	}
 }
 
@@ -336,11 +336,11 @@ int findLastY(int x, int y)
 }*/
 
 
-void newMap(TCODRandom *RNG)
+void newMap(Level *level, TCODRandom *RNG)
 {
 
-	levels[Player.getDepth()].DStairsLoc[0] = 0;
-	levels[Player.getDepth()].DStairsLoc[1] = 0;
+	level->DStairsLoc[0] = 0;
+	level->DStairsLoc[1] = 0;
 
 	//Generate map. Keep trying until player location is a walkable tile
 	do
@@ -351,45 +351,45 @@ void newMap(TCODRandom *RNG)
 		origSmooth();
 		smooth();
 		origSmooth();
-	} while(!levels[Player.getDepth()].atMap[Player.getXPos()][Player.getYPos()].isWalkable());
+	} while(!level->atMap[Player.getXPos()][Player.getYPos()].isWalkable());
 
 	//Position upwards stairs at current player position
-	levels[Player.getDepth()].atMap[Player.getXPos()][Player.getYPos()] = tUStairs;
-	levels[Player.getDepth()].UStairsLoc[0] = Player.getXPos();
-	levels[Player.getDepth()].UStairsLoc[1] = Player.getYPos();
+	level->atMap[Player.getXPos()][Player.getYPos()] = tUStairs;
+	level->UStairsLoc[0] = Player.getXPos();
+	level->UStairsLoc[1] = Player.getYPos();
 	
 	//Place downwards stairs on random floor tile
-	while( !levels[Player.getDepth()].atMap[levels[Player.getDepth()].DStairsLoc[0]][levels[Player.getDepth()].DStairsLoc[1]].equals(tFloor) )
+	while( !level->atMap[level->DStairsLoc[0]][level->DStairsLoc[1]].equals(tFloor) )
 	{
-		levels[Player.getDepth()].DStairsLoc[0] = RNG->getInt(0, MAP_WIDTH);
-		levels[Player.getDepth()].DStairsLoc[1] = RNG->getInt(0, MAP_HEIGHT);
+		level->DStairsLoc[0] = RNG->getInt(0, MAP_WIDTH);
+		level->DStairsLoc[1] = RNG->getInt(0, MAP_HEIGHT);
 	}
-	levels[Player.getDepth()].atMap[levels[Player.getDepth()].DStairsLoc[0]][levels[Player.getDepth()].DStairsLoc[1]] = tDStairs;
+	level->atMap[level->DStairsLoc[0]][level->DStairsLoc[1]] = tDStairs;
 
 	//Generate map of permissibility for enemies
-	levels[Player.getDepth()].CalcMap = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
+	level->CalcMap = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-		levels[Player.getDepth()].CalcMap->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), levels[Player.getDepth()].atMap[iii][jjj].isWalkable());
+		level->CalcMap->setProperties(iii, jjj, level->atMap[iii][jjj].isTransparent(), level->atMap[iii][jjj].isWalkable());
 
-	levels[Player.getDepth()].CalcPath = new TCODPath(levels[Player.getDepth()].CalcMap);
-	populate(RNG);
+	level->CalcPath = new TCODPath(level->CalcMap);
+	populate(level, RNG);
 
-	levels[Player.getDepth()].generated = true;
+	level->generated = true;
 }
 
 //Creates new TCODMap and copies walkable & transparent properties
 //Computes FOV using libtcod computeFov
 //If an element of TCODMap is in FOV, print corresponding element to screen
 //Previously discovered but out of FOV tiles are printed in grey, undiscovered tiles are not printed
-void calcFOV(TCODConsole *screen)
+void calcFOV(Level *level, TCODConsole *screen)
 {
 	TCODMap *map = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 
 	//Initialise *map with properties from game map
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-		map->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), levels[Player.getDepth()].atMap[iii][jjj].isWalkable());
+		map->setProperties(iii, jjj, level->atMap[iii][jjj].isTransparent(), level->atMap[iii][jjj].isWalkable());
 
 	map->computeFov(Player.getXPos(), Player.getYPos(), SIGHT_RANGE, true, FOV_BASIC);
 
@@ -401,20 +401,20 @@ void calcFOV(TCODConsole *screen)
 	{
 		if(map->isInFov(x,y))
 		{
-			screen->putCharEx(x, y, levels[Player.getDepth()].atMap[x][y].getSymbol(), levels[Player.getDepth()].atMap[x][y].getColour(), TCODColor::black);
-			levels[Player.getDepth()].atMap[x][y].setDiscovered(true);
+			screen->putCharEx(x, y, level->atMap[x][y].getSymbol(), level->atMap[x][y].getColour(), TCODColor::black);
+			level->atMap[x][y].setDiscovered(true);
 		}
-		else if(levels[Player.getDepth()].atMap[x][y].isDiscovered())
+		else if(level->atMap[x][y].isDiscovered())
 		{
-			screen->putCharEx(x, y, levels[Player.getDepth()].atMap[x][y].getSymbol(), TCODColor::grey, TCODColor::black);
+			screen->putCharEx(x, y, level->atMap[x][y].getSymbol(), TCODColor::grey, TCODColor::black);
 		}
 
 	}
 
 	
 	//Iterates list of creatures in level and displays if it's in the player's field-of-vision
-	std::list<cNPC>::iterator monst = levels[Player.getDepth()].monsters.begin();
-	while(monst != levels[Player.getDepth()].monsters.end())
+	std::list<cNPC>::iterator monst = level->monsters.begin();
+	while(monst != level->monsters.end())
 	{
 		if( map->isInFov(monst->getXPos(), monst->getYPos()) && monst->getCurrHp() > 0)
 		{
@@ -430,8 +430,8 @@ void calcFOV(TCODConsole *screen)
 	}
 
 	//Iterates list of weapons, displaying a weapon if it's in the player's field-of-vision
-	std::list<cWeapon>::iterator weap = levels[Player.getDepth()].weapons.begin();
-	while(weap != levels[Player.getDepth()].weapons.end())
+	std::list<cWeapon>::iterator weap = level->weapons.begin();
+	while(weap != level->weapons.end())
 	{
 		if( map->isInFov(weap->getXPos(), weap->getYPos()))
 		{
