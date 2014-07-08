@@ -12,7 +12,50 @@
 #define MAX_LEVELS 100
 #define SIGHT_RANGE 10
 
-typedef struct Level
+class cLevel
+{
+	private:
+		
+
+	public:
+		TCODRandom *Seed;
+		short UStairsLoc[2], DStairsLoc[2];
+		cTile atMap[MAP_WIDTH][MAP_HEIGHT];
+		bool generated;
+
+		TCODMap *CalcMap;
+		TCODPath *CalcPath;
+
+		TCODMap *PlayerMap;
+		TCODPath *PlayerPath;
+
+		std::list<cNPC> monsters;
+		std::list<cWeapon> weapons;
+
+
+		void populate(TCODRandom *RNG);
+		void scatterItems(TCODRandom *RNG);
+		void randFillMap(TCODRandom *RNG);
+		void wallEdges();
+		void makeRoom(int x, int y, int width, int height);
+		void nullRoom(int x, int y, int width, int height);
+		void bspMap(TCODRandom *RNG);
+		void origSmooth();
+		void smooth();
+		int findNext(bool getX);
+		int findLastX(int x, int y);
+		int findLastY(int x, int y);
+		void addRoom(TCODRandom *RNG);
+		void altRooms();
+		//void firstMap(TCODRandom *RNG);
+		void newMap(TCODRandom *RNG);
+		void calcFOV(TCODConsole *screen);
+		void calcFOVTorch(TCODConsole *screen);
+		int wallsInRadius(int x, int y, int radius);
+
+};
+
+/*typedef struct Level
 {
 		TCODRandom *Seed;
 		short UStairsLoc[2], DStairsLoc[2];
@@ -50,7 +93,7 @@ void altRooms();
 void newMap(Level *level, TCODRandom *RNG);
 void calcFOV(Level *level, TCODConsole *screen);
 void calcFOVTorch(TCODConsole *screen);
-
-extern Level levels[MAX_LEVELS];
+*/
+extern cLevel levels[MAX_LEVELS];
 
 #endif

@@ -31,7 +31,7 @@ TCODConsole *stats = new TCODConsole( STATS_WIDTH, SCREEN_HEIGHT );
 
 TCODPath *path;
 
-Level *level = &levels[Player.getDepth()];
+cLevel *level = &levels[Player.getDepth()];
 
 bool pathMade;
 
@@ -193,7 +193,7 @@ void handleKeys(TCOD_key_t k, TCODRandom *RNG)
 					level = &levels[Player.getDepth()];
 					if(!levels[Player.getDepth()].generated)
 					{	
-						newMap(level, RNG);
+					level->newMap(RNG);
 					}
 					mapScreen->clear();
 				}
@@ -271,11 +271,11 @@ int main()
 	Player.setYPos(PRNG->getInt(0, MAP_HEIGHT));
 	
 	//firstMap(PRNG);
-	newMap(level, PRNG);
+	level->newMap(PRNG);
 
 	pathMade = false;
 	
-	calcFOV(level, mapScreen);
+	level->calcFOV(mapScreen);
 	draw(pathMade, 0);
 
 	//Game loop - handles input, display and resolves AI
@@ -295,7 +295,7 @@ int main()
 
 		//Update screen
 		mapScreen->clear();
-		calcFOV(level, mapScreen);
+		level->calcFOV(mapScreen);
 		draw(pathMade, 0);
 
 		//Blocking key input
@@ -353,7 +353,7 @@ int main()
 				int x, y;
 				path->get(i, &x, &y);
 				attackMove(x - Player.getXPos(), y - Player.getYPos());
-				calcFOV(level, mapScreen);
+				level->calcFOV(mapScreen);
 
 				draw(pathMade, i);
 			}

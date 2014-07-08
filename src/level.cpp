@@ -4,10 +4,10 @@
 
 #include <iostream>
 
-Level levels[MAX_LEVELS];
+cLevel levels[MAX_LEVELS];
 
 //Places between 10 and 25 creatures randomly in level
-void populate(Level *level, TCODRandom *RNG)
+void cLevel::populate(TCODRandom *RNG)
 {
 	int ID = 0;
 	int nMonsters = RNG->getInt(10, 25);
@@ -18,15 +18,15 @@ void populate(Level *level, TCODRandom *RNG)
 		{
 			newMonster.setXPos(RNG->getInt(0, MAP_WIDTH));
 			newMonster.setYPos(RNG->getInt(0, MAP_HEIGHT));
-		} while( level->atMap[newMonster.getXPos()][newMonster.getYPos()].equals(tWall) );
+		} while( this->atMap[newMonster.getXPos()][newMonster.getYPos()].equals(tWall) );
 		newMonster.setID(ID++);
-		level->monsters.push_back(newMonster);
+		this->monsters.push_back(newMonster);
 	}
 }
 
 //Places items randomly throughout level
 //Still WIP
-void scatterItems(TCODRandom *RNG)
+void cLevel::scatterItems(TCODRandom *RNG)
 {
 	int nItems = RNG->getInt(10, 25);
 	for(int iii = 0; iii < nItems; iii++)
@@ -37,33 +37,33 @@ void scatterItems(TCODRandom *RNG)
 		{
 			x = RNG->getInt(0, MAP_WIDTH);
 			y = RNG->getInt(0, MAP_HEIGHT);
-		} while( levels[Player.getDepth()].atMap[x][y].equals(tWall));
+		} while( this->atMap[x][y].equals(tWall));
 
 		cWeapon newWeapon(WeaponID++, RNG->getInt(0,4), RNG->getInt(-Player.getLevel(), Player.getLevel()));
 		
 		newWeapon.setXPos(x);
 		newWeapon.setYPos(y);
-		levels[Player.getDepth()].weapons.push_back(newWeapon);
+		this->weapons.push_back(newWeapon);
 	}
 }
 
 //Generates random number between 0 and 1 for each cell of map
 //If below threshold (0.4), places a wall
 //Used before cellular automata map generation method
-void randFillMap(TCODRandom *RNG)
+void cLevel::randFillMap(TCODRandom *RNG)
 {
 	for(int x = 0; x < MAP_WIDTH; x++)
 	for(int y = 0; y < MAP_HEIGHT; y++)
 	{
 		if( RNG->getFloat(0,1) < 0.40f)
-			levels[Player.getDepth()].atMap[x][y] = tWall;
+			this->atMap[x][y] = tWall;
 		else
 			levels[Player.getDepth()].atMap[x][y] = tFloor;
 	}
 }
 
 //Sets map cells at edge to wall tiles
-void wallEdges()
+void cLevel::wallEdges()
 {
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
 	{
@@ -78,7 +78,7 @@ void wallEdges()
 }
 
 //Sets rectangular area of map to floor then edges of that area to walls
-void makeRoom(int x, int y, int width, int height)
+void cLevel::makeRoom(int x, int y, int width, int height)
 {
 
 	for(int iii = x; iii < (x + width); iii++)
@@ -101,7 +101,7 @@ void makeRoom(int x, int y, int width, int height)
 }
 
 //Fills a room with wall tiles
-void nullRoom(int x, int y, int width, int height)
+void cLevel::nullRoom(int x, int y, int width, int height)
 {
 	for(int iii = x; iii < (x + width); iii++)
 	for(int jjj = y; jjj < (y + height); jjj++)
@@ -112,7 +112,7 @@ void nullRoom(int x, int y, int width, int height)
 
 //For use in BSP mapgen method
 //Forms rooms on traversal of BSP tree
-class callBack : public ITCODBspCallback
+/*class callBack : public ITCODBspCallback
 {
 	public:
 		bool visitNode(TCODBsp *node, void *userData)
@@ -124,19 +124,19 @@ class callBack : public ITCODBspCallback
 				makeRoom(node->x, node->y, node->w, node->h);
 			return true;
 		}
-};
+};*/
 
 //Generates map by recursively splitting map into randomly sized nodes
-void bspMap(TCODRandom *RNG)
+/*void cLevel::bspMap(TCODRandom *RNG)
 {
 	TCODBsp *map = new TCODBsp( 0, 0, MAP_WIDTH-1, MAP_HEIGHT-1);
 	map->splitRecursive(RNG, 6, 4, 6, 1.5f, 1.5f);
 	map->traversePreOrder(new callBack(), NULL);
-}
+}*/
 
 //Iterates through square with center of (x, y), counting wall tiles
 //Size of square is 2*radius + 1
-int wallsInRadius(int x, int y, int radius)
+int cLevel::wallsInRadius(int x, int y, int radius)
 {
 	int nWalls = 0;
 	for(int ySurround = 0 - radius; ySurround <= radius; ySurround++)
@@ -151,7 +151,7 @@ int wallsInRadius(int x, int y, int radius)
 //For cellular automata method
 //Checks number of adjacent wall tiles for each map cell (excl. edges which are always walls)
 //If below threshold (5), sets to floor tile else sets to wall tile
-void origSmooth()
+void cLevel::origSmooth()
 {
 	int nWalls = 0;
 
@@ -194,7 +194,7 @@ void origSmooth()
 //Checks number, R1, of adjacent wall tiles for each map cell (excl. edges which are always walls)
 //Also calculates number, R2, of wall tiles within 2 blocks
 //Sets map cell to wall tile if 5+ adjacent walls or if 2 or fewer walls within 2 tile radius 
-void smooth()
+void cLevel::smooth()
 {
 	int nWallsR1 = 0;
 	int nWallsR2 = 0;
@@ -242,7 +242,7 @@ void smooth()
 //Iterates through map, returning index of first unassigned tile
 //X index if getX == true, Y index if false
 //If no unassigned tiles, returns -1
-int findNext(bool getX)
+int cLevel::findNext(bool getX)
 {
 	for(int iii = 1; iii < MAP_HEIGHT; iii++)
 	for(int jjj = 1; jjj < MAP_WIDTH; jjj++)
@@ -258,7 +258,7 @@ int findNext(bool getX)
 
 //Given coordinates, iterates along x axis until the last in the current series of unassigned tiles is found
 //Returns the X coordinate of said tile
-int findLastX(int x, int y)
+int cLevel::findLastX(int x, int y)
 {
 	int last = 0;
 	for(int iii = x; iii < MAP_WIDTH; iii++)
@@ -273,7 +273,7 @@ int findLastX(int x, int y)
 
 //Given coordinates, iterates along y axis until the last in the current series of unassigned tiles is found
 //Returns the Y coordinate of said tile
-int findLastY(int x, int y)
+int cLevel::findLastY(int x, int y)
 {
 	int last = 0;
 	for(int iii = y; iii < MAP_HEIGHT; iii++)
@@ -336,11 +336,11 @@ int findLastY(int x, int y)
 }*/
 
 
-void newMap(Level *level, TCODRandom *RNG)
+void cLevel::newMap(TCODRandom *RNG)
 {
 
-	level->DStairsLoc[0] = 0;
-	level->DStairsLoc[1] = 0;
+	this->DStairsLoc[0] = 0;
+	this->DStairsLoc[1] = 0;
 
 	//Generate map. Keep trying until player location is a walkable tile
 	do
@@ -351,45 +351,45 @@ void newMap(Level *level, TCODRandom *RNG)
 		origSmooth();
 		smooth();
 		origSmooth();
-	} while(!level->atMap[Player.getXPos()][Player.getYPos()].isWalkable());
+	} while(!this->atMap[Player.getXPos()][Player.getYPos()].isWalkable());
 
 	//Position upwards stairs at current player position
-	level->atMap[Player.getXPos()][Player.getYPos()] = tUStairs;
-	level->UStairsLoc[0] = Player.getXPos();
-	level->UStairsLoc[1] = Player.getYPos();
+	this->atMap[Player.getXPos()][Player.getYPos()] = tUStairs;
+	this->UStairsLoc[0] = Player.getXPos();
+	this->UStairsLoc[1] = Player.getYPos();
 	
 	//Place downwards stairs on random floor tile
-	while( !level->atMap[level->DStairsLoc[0]][level->DStairsLoc[1]].equals(tFloor) )
+	while( !this->atMap[this->DStairsLoc[0]][this->DStairsLoc[1]].equals(tFloor) )
 	{
-		level->DStairsLoc[0] = RNG->getInt(0, MAP_WIDTH);
-		level->DStairsLoc[1] = RNG->getInt(0, MAP_HEIGHT);
+		this->DStairsLoc[0] = RNG->getInt(0, MAP_WIDTH);
+		this->DStairsLoc[1] = RNG->getInt(0, MAP_HEIGHT);
 	}
-	level->atMap[level->DStairsLoc[0]][level->DStairsLoc[1]] = tDStairs;
+	this->atMap[this->DStairsLoc[0]][this->DStairsLoc[1]] = tDStairs;
 
 	//Generate map of permissibility for enemies
-	level->CalcMap = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
+	this->CalcMap = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-		level->CalcMap->setProperties(iii, jjj, level->atMap[iii][jjj].isTransparent(), level->atMap[iii][jjj].isWalkable());
+		this->CalcMap->setProperties(iii, jjj, this->atMap[iii][jjj].isTransparent(), this->atMap[iii][jjj].isWalkable());
 
-	level->CalcPath = new TCODPath(level->CalcMap);
-	populate(level, RNG);
+	this->CalcPath = new TCODPath(this->CalcMap);
+	populate(RNG);
 
-	level->generated = true;
+	this->generated = true;
 }
 
 //Creates new TCODMap and copies walkable & transparent properties
 //Computes FOV using libtcod computeFov
 //If an element of TCODMap is in FOV, print corresponding element to screen
 //Previously discovered but out of FOV tiles are printed in grey, undiscovered tiles are not printed
-void calcFOV(Level *level, TCODConsole *screen)
+void cLevel::calcFOV(TCODConsole *screen)
 {
 	TCODMap *map = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 
 	//Initialise *map with properties from game map
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-		map->setProperties(iii, jjj, level->atMap[iii][jjj].isTransparent(), level->atMap[iii][jjj].isWalkable());
+		map->setProperties(iii, jjj, this->atMap[iii][jjj].isTransparent(), this->atMap[iii][jjj].isWalkable());
 
 	map->computeFov(Player.getXPos(), Player.getYPos(), SIGHT_RANGE, true, FOV_BASIC);
 
@@ -401,20 +401,20 @@ void calcFOV(Level *level, TCODConsole *screen)
 	{
 		if(map->isInFov(x,y))
 		{
-			screen->putCharEx(x, y, level->atMap[x][y].getSymbol(), level->atMap[x][y].getColour(), TCODColor::black);
-			level->atMap[x][y].setDiscovered(true);
+			screen->putCharEx(x, y, this->atMap[x][y].getSymbol(), this->atMap[x][y].getColour(), TCODColor::black);
+			this->atMap[x][y].setDiscovered(true);
 		}
-		else if(level->atMap[x][y].isDiscovered())
+		else if(this->atMap[x][y].isDiscovered())
 		{
-			screen->putCharEx(x, y, level->atMap[x][y].getSymbol(), TCODColor::grey, TCODColor::black);
+			screen->putCharEx(x, y, this->atMap[x][y].getSymbol(), TCODColor::grey, TCODColor::black);
 		}
 
 	}
 
 	
 	//Iterates list of creatures in level and displays if it's in the player's field-of-vision
-	std::list<cNPC>::iterator monst = level->monsters.begin();
-	while(monst != level->monsters.end())
+	std::list<cNPC>::iterator monst = this->monsters.begin();
+	while(monst != this->monsters.end())
 	{
 		if( map->isInFov(monst->getXPos(), monst->getYPos()) && monst->getCurrHp() > 0)
 		{
@@ -430,8 +430,8 @@ void calcFOV(Level *level, TCODConsole *screen)
 	}
 
 	//Iterates list of weapons, displaying a weapon if it's in the player's field-of-vision
-	std::list<cWeapon>::iterator weap = level->weapons.begin();
-	while(weap != level->weapons.end())
+	std::list<cWeapon>::iterator weap = this->weapons.begin();
+	while(weap != this->weapons.end())
 	{
 		if( map->isInFov(weap->getXPos(), weap->getYPos()))
 		{
@@ -447,7 +447,7 @@ void calcFOV(Level *level, TCODConsole *screen)
 //Computes FOV using libtcod computeFov
 //If an element of TCODMap is in FOV, print corresponding element to screen with appropriate lighting
 //Previously discovered tiles printed in colour, undiscovered aren't printed
-void calcFOVTorch(TCODConsole *screen)
+void cLevel::calcFOVTorch(TCODConsole *screen)
 {
 	TCODMap *map = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 	TCODColor base, tmp;
