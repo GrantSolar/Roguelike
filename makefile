@@ -1,10 +1,10 @@
 EXECUTABLE=RL
 CC=g++
-FLAGS=-o $(EXECUTABLE) -g -Iinclude -L./lib -ltcod -ltcodxx -Wl,-rpath=.
+FLAGS=-o $(EXECUTABLE) -g -Iinclude -L./lib -ltcod -ltcodxx -lstdc++ -lm -Wl,-rpath=.
 
 all:
 	$(CC) src/*.cpp $(FLAGS)
-	cp lib/*.so.1 .
+	cp lib/*.so .
 
 clean:
 	rm $(EXECUTABLE)
