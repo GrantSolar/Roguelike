@@ -6,6 +6,11 @@
 
 cLevel levels[MAX_LEVELS];
 
+short cLevel::getLevelNum()
+{
+	return this->levelNum;
+}
+
 //Places between 10 and 25 creatures randomly in level
 void cLevel::populate(TCODRandom *RNG)
 {
@@ -14,11 +19,14 @@ void cLevel::populate(TCODRandom *RNG)
 	for(int iii = 0; iii < nMonsters; iii++)
 	{
 		cNPC newMonster;
+		int randX, randY;
 		do
 		{
-			newMonster.setXPos(RNG->getInt(0, MAP_WIDTH));
-			newMonster.setYPos(RNG->getInt(0, MAP_HEIGHT));
-		} while( this->atMap[newMonster.getXPos()][newMonster.getYPos()].equals(tWall) );
+			randX = RNG->getInt(0, MAP_WIDTH);
+			randY = RNG->getInt(0, MAP_HEIGHT);
+			newMonster.setXPos(randX);
+			newMonster.setYPos(randY);
+		} while( this->atMap[randX][randY].equals(tWall) );
 		newMonster.setID(ID++);
 		this->monsters.push_back(newMonster);
 	}
@@ -58,7 +66,7 @@ void cLevel::randFillMap(TCODRandom *RNG)
 		if( RNG->getFloat(0,1) < 0.40f)
 			this->atMap[x][y] = tWall;
 		else
-			levels[Player.getDepth()].atMap[x][y] = tFloor;
+			this->atMap[x][y] = tFloor;
 	}
 }
 
@@ -67,13 +75,13 @@ void cLevel::wallEdges()
 {
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
 	{
-		levels[Player.getDepth()].atMap[iii][0] = tWall;
-		levels[Player.getDepth()].atMap[iii][MAP_HEIGHT-1] = tWall;
+		this->atMap[iii][0] = tWall;
+		this->atMap[iii][MAP_HEIGHT-1] = tWall;
 	}
 	for(int iii = 0; iii < MAP_HEIGHT; iii++)
 	{
-		levels[Player.getDepth()].atMap[0][iii] = tWall;
-		levels[Player.getDepth()].atMap[MAP_WIDTH-1][iii] = tWall;
+		this->atMap[0][iii] = tWall;
+		this->atMap[MAP_WIDTH-1][iii] = tWall;
 	}
 }
 
@@ -84,19 +92,19 @@ void cLevel::makeRoom(int x, int y, int width, int height)
 	for(int iii = x; iii < (x + width); iii++)
 	for(int jjj = y; jjj < (y + height); jjj++)
 	{
-		levels[Player.getDepth()].atMap[iii][jjj] = tFloor;
+		this->atMap[iii][jjj] = tFloor;
 	}
 	//vertical walls
 	for(int jjj = y; jjj <= (y + height); jjj++)
 	{
-		levels[Player.getDepth()].atMap[x+width][jjj] = tWall;
-		levels[Player.getDepth()].atMap[x][jjj] = tWall;
+		this->atMap[x+width][jjj] = tWall;
+		this->atMap[x][jjj] = tWall;
 	}
 	//horizontal walls
 	for(int iii = x; iii <= (x + width); iii++)
 	{
-		levels[Player.getDepth()].atMap[iii][y+height] = tWall;
-		levels[Player.getDepth()].atMap[iii][y] = tWall;
+		this->atMap[iii][y+height] = tWall;
+		this->atMap[iii][y] = tWall;
 	}
 }
 
@@ -106,7 +114,7 @@ void cLevel::nullRoom(int x, int y, int width, int height)
 	for(int iii = x; iii < (x + width); iii++)
 	for(int jjj = y; jjj < (y + height); jjj++)
 	{
-		levels[Player.getDepth()].atMap[iii][jjj] = tWall;
+		this->atMap[iii][jjj] = tWall;
 	}
 }
 
@@ -142,7 +150,7 @@ int cLevel::wallsInRadius(int x, int y, int radius)
 	for(int ySurround = 0 - radius; ySurround <= radius; ySurround++)
 	for(int xSurround = 0 - radius; xSurround <= radius; xSurround++)
 	{
-		if(levels[Player.getDepth()].atMap[y + ySurround][x + xSurround].equals(tWall))
+		if(this->atMap[y + ySurround][x + xSurround].equals(tWall))
 			nWalls++;
 	}
 	return nWalls;
@@ -186,7 +194,7 @@ void cLevel::origSmooth()
 	for(int x = 0; x < MAP_WIDTH; x ++)
 	{
 		for(int y = 0; y < MAP_HEIGHT; y++)
-			levels[Player.getDepth()].atMap[x][y] = aoTempCave[x][y];
+			this->atMap[x][y] = aoTempCave[x][y];
 	}
 }
 
@@ -234,7 +242,7 @@ void cLevel::smooth()
 	for(int x = 0; x < MAP_WIDTH; x ++)
 	{
 		for(int y = 0; y < MAP_HEIGHT; y++)
-			levels[Player.getDepth()].atMap[x][y] = aoTempCave[x][y];
+			this->atMap[x][y] = aoTempCave[x][y];
 	}
 	
 }
@@ -247,7 +255,7 @@ int cLevel::findNext(bool getX)
 	for(int iii = 1; iii < MAP_HEIGHT; iii++)
 	for(int jjj = 1; jjj < MAP_WIDTH; jjj++)
 	{
-		if( levels[Player.getDepth()].atMap[jjj][iii].equals(tUnassigned) )
+		if( this->atMap[jjj][iii].equals(tUnassigned) )
 			if(getX)
 				return jjj;
 			else
@@ -263,7 +271,7 @@ int cLevel::findLastX(int x, int y)
 	int last = 0;
 	for(int iii = x; iii < MAP_WIDTH; iii++)
 	{
-		if( levels[Player.getDepth()].atMap[iii][y].equals(tUnassigned) )
+		if( this->atMap[iii][y].equals(tUnassigned) )
 			last = iii;
 		else
 			return last;
@@ -278,7 +286,7 @@ int cLevel::findLastY(int x, int y)
 	int last = 0;
 	for(int iii = y; iii < MAP_HEIGHT; iii++)
 	{
-		if( levels[Player.getDepth()].atMap[x][iii].equals(tUnassigned) )
+		if( this->atMap[x][iii].equals(tUnassigned) )
 			last = iii;
 		else
 			return last;
@@ -335,12 +343,8 @@ int cLevel::findLastY(int x, int y)
 	wallEdges();
 }*/
 
-
-void cLevel::newMap(TCODRandom *RNG)
+void cLevel::generateMap(short playerX, short playerY, TCODRandom *RNG)
 {
-
-	this->DStairsLoc[0] = 0;
-	this->DStairsLoc[1] = 0;
 
 	//Generate map. Keep trying until player location is a walkable tile
 	do
@@ -351,12 +355,16 @@ void cLevel::newMap(TCODRandom *RNG)
 		origSmooth();
 		smooth();
 		origSmooth();
-	} while(!this->atMap[Player.getXPos()][Player.getYPos()].isWalkable());
+	} while(!this->atMap[playerX][playerY].isWalkable());
+	
+}
 
+void cLevel::placeStairs(short playerX, short playerY, TCODRandom *RNG)
+{
 	//Position upwards stairs at current player position
-	this->atMap[Player.getXPos()][Player.getYPos()] = tUStairs;
-	this->UStairsLoc[0] = Player.getXPos();
-	this->UStairsLoc[1] = Player.getYPos();
+	this->atMap[playerX][playerY] = tUStairs;
+	this->UStairsLoc[0] = playerX;
+	this->UStairsLoc[1] = playerY;
 	
 	//Place downwards stairs on random floor tile
 	while( !this->atMap[this->DStairsLoc[0]][this->DStairsLoc[1]].equals(tFloor) )
@@ -365,7 +373,10 @@ void cLevel::newMap(TCODRandom *RNG)
 		this->DStairsLoc[1] = RNG->getInt(0, MAP_HEIGHT);
 	}
 	this->atMap[this->DStairsLoc[0]][this->DStairsLoc[1]] = tDStairs;
+}
 
+void cLevel::generatePermissibility()
+{
 	//Generate map of permissibility for enemies
 	this->CalcMap = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
@@ -373,6 +384,21 @@ void cLevel::newMap(TCODRandom *RNG)
 		this->CalcMap->setProperties(iii, jjj, this->atMap[iii][jjj].isTransparent(), this->atMap[iii][jjj].isWalkable());
 
 	this->CalcPath = new TCODPath(this->CalcMap);
+}
+
+void cLevel::newMap(TCODRandom *RNG)
+{
+
+	this->DStairsLoc[0] = 0;
+	this->DStairsLoc[1] = 0;
+
+	short playerX = Player.getXPos();
+	short playerY = Player.getYPos();
+
+	generateMap(playerX, playerY, RNG);
+	placeStairs(playerX, playerY, RNG);
+
+	generatePermissibility();
 	populate(RNG);
 
 	this->generated = true;
@@ -457,7 +483,7 @@ void cLevel::calcFOVTorch(TCODConsole *screen)
 	//Initialise *map with properties from game map
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-		map->setProperties(iii, jjj, levels[Player.getDepth()].atMap[iii][jjj].isTransparent(), levels[Player.getDepth()].atMap[iii][jjj].isWalkable());
+		map->setProperties(iii, jjj, this->atMap[iii][jjj].isTransparent(), this->atMap[iii][jjj].isWalkable());
 
 	map->computeFov(Player.getXPos(), Player.getYPos(), SIGHT_RANGE, true, FOV_BASIC);
 
@@ -480,17 +506,17 @@ void cLevel::calcFOVTorch(TCODConsole *screen)
 			base = TCODColor::lerp(TCODColor::black, tmp, lum);
 
 			//Print symbol to mapScreen Set corresponding element of current map to discovered
-			screen->putCharEx(x, y, levels[Player.getDepth()].atMap[x][y].getSymbol(), levels[Player.getDepth()].atMap[x][y].getColour(), base);
-			levels[Player.getDepth()].atMap[x][y].setDiscovered(true);
+			screen->putCharEx(x, y, this->atMap[x][y].getSymbol(), this->atMap[x][y].getColour(), base);
+			this->atMap[x][y].setDiscovered(true);
 		}
-		else if(levels[Player.getDepth()].atMap[x][y].isDiscovered())
+		else if(this->atMap[x][y].isDiscovered())
 		{
-			screen->putCharEx(x, y, levels[Player.getDepth()].atMap[x][y].getSymbol(), levels[Player.getDepth()].atMap[x][y].getColour(), TCODColor::black);
+			screen->putCharEx(x, y, this->atMap[x][y].getSymbol(), this->atMap[x][y].getColour(), TCODColor::black);
 		}
 	}
 	
-	std::list<cNPC>::iterator monst = levels[Player.getDepth()].monsters.begin();
-	while(monst != levels[Player.getDepth()].monsters.end())
+	std::list<cNPC>::iterator monst = this->monsters.begin();
+	while(monst != this->monsters.end())
 	{
 		if( monst->getCurrHp() > 0)
 			screen->putCharEx(monst->getXPos(), monst->getYPos(), '&', TCODColor::red, screen->getCharBackground(monst->getXPos(), monst->getYPos()));

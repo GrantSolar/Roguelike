@@ -15,7 +15,7 @@
 class cLevel
 {
 	private:
-		
+		short levelNum;
 
 	public:
 		TCODRandom *Seed;
@@ -33,6 +33,7 @@ class cLevel
 		std::list<cWeapon> weapons;
 
 
+		short getLevelNum();
 		void populate(TCODRandom *RNG);
 		void scatterItems(TCODRandom *RNG);
 		void randFillMap(TCODRandom *RNG);
@@ -48,6 +49,9 @@ class cLevel
 		void addRoom(TCODRandom *RNG);
 		void altRooms();
 		//void firstMap(TCODRandom *RNG);
+		void generateMap(short playerX, short playerY, TCODRandom *RNG);
+		void placeStairs(short playerX, short playerY, TCODRandom *RNG);
+		void generatePermissibility();
 		void newMap(TCODRandom *RNG);
 		void calcFOV(TCODConsole *screen);
 		void calcFOVTorch(TCODConsole *screen);
@@ -67,7 +71,7 @@ class cLevel
 		TCODMap *CalcMap;
 		TCODPath *CalcPath;
 
-		//Based on player's knowledge of the levek
+		//Based on player's knowledge of the level
 		TCODMap *PlayerMap;
 		TCODPath *PlayerPath;
 
