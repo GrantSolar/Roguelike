@@ -22,8 +22,9 @@ void cLevel::populate(TCODRandom *RNG)
 		int randX, randY;
 		do
 		{
-			randX = RNG->getInt(0, MAP_WIDTH);
-			randY = RNG->getInt(0, MAP_HEIGHT);
+			//Map border will always be walls
+			randX = RNG->getInt(1, MAP_WIDTH-1);
+			randY = RNG->getInt(1, MAP_HEIGHT-1);
 			newMonster.setXPos(randX);
 			newMonster.setYPos(randY);
 		} while( this->atMap[randX][randY].equals(tWall) );
