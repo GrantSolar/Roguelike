@@ -37,6 +37,7 @@ class cLevel
 		bool isWalkable(int x, int y);
 		bool isTransparent(int x, int y);
 		bool isDiscovered(int x, int y);
+		bool tileEquals(int x, int y, cTile tile);
 		void populate(TCODRandom *RNG);
 		void scatterItems(TCODRandom *RNG);
 		void randFillMap(TCODRandom *RNG);

@@ -27,6 +27,11 @@ bool cLevel::isDiscovered(int x, int y)
 	return this->atMap[x][y].isDiscovered();
 }
 
+bool cLevel::tileEquals(int x, int y, cTile tile)
+{
+	return this->atMap[x][y].equals(tile);
+}
+
 //Places between 10 and 25 creatures randomly in level
 void cLevel::populate(TCODRandom *RNG)
 {

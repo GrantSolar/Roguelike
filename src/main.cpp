@@ -120,7 +120,7 @@ void attackMove(int xRel, int yRel)
 	getTarget(Player.getXPos()+xRel, Player.getYPos()+yRel);
 	if( !Target->equals(&Dummy) )
 		Player.attack(Target);
-	else if(level->atMap[Player.getXPos()+xRel][Player.getYPos()+yRel].isWalkable() )
+	else if(level->isWalkable(Player.getXPos()+xRel, Player.getYPos()+yRel) )
 		Player.move(xRel, yRel);
 	movedorattacked = true;
 }
@@ -313,20 +313,20 @@ int main()
 			oldX = mouse.cx;
 			oldY = mouse.cy;
 
-			if( !(level->atMap[mouse.cx][mouse.cy].equals(tWall)) && level->atMap[mouse.cx][mouse.cy].isDiscovered() )
+			if( !(level->tileEquals(mouse.cx, mouse.cy, tWall)) && level->isDiscovered(mouse.cx, mouse.cy) )
 			{
 				
 				//Calculate path from player position to mouse position
 				TCODMap *map = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 				for(int iii = 0; iii < MAP_WIDTH; iii++)
 					for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-						if(level->atMap[iii][jjj].isDiscovered())
+						if(level->isDiscovered(iii, jjj))
 						{
-							map->setProperties(iii, jjj, level->atMap[iii][jjj].isTransparent(), level->atMap[iii][jjj].isWalkable());
+							map->setProperties(iii, jjj, level->isTransparent(iii, jjj), level->isWalkable(iii, jjj));
 						}
 						else
 						{
-							map->setProperties(iii, jjj, level->atMap[iii][jjj].isTransparent(), false);
+							map->setProperties(iii, jjj, level->isTransparent(iii, jjj), false);
 						}
 				path = new TCODPath(map);
 
