@@ -55,7 +55,7 @@ void announcement(const char *message, ...)
 void getTarget(int x, int y)
 {
 	std::list<cNPC>::iterator targ;
-	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
+	for(targ = level->monsters.begin(); targ != level->monsters.end(); targ++)
 		if(targ->getXPos() == x && targ->getYPos() == y)
 		{
 			//Updates screen to show the target's statistics
@@ -73,10 +73,10 @@ void getTarget(int x, int y)
 //For each enemy, attacks if possible. Moves closer if can see the player. Moves randomly throughout the map if can't see player
 void resolveAI()
 {
-	TCODPath *path = new TCODPath(levels[Player.getDepth()].CalcMap);
+	TCODPath *path = new TCODPath(level->CalcMap);
 	std::list<cNPC>::iterator targ;
 
-	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
+	for(targ = level->monsters.begin(); targ != level->monsters.end(); targ++)
 	{
 		targ->runAI();
 	}
@@ -120,7 +120,7 @@ void attackMove(int xRel, int yRel)
 	getTarget(Player.getXPos()+xRel, Player.getYPos()+yRel);
 	if( !Target->equals(&Dummy) )
 		Player.attack(Target);
-	else if(levels[Player.getDepth()].atMap[Player.getXPos()+xRel][Player.getYPos()+yRel].isWalkable() )
+	else if(level->atMap[Player.getXPos()+xRel][Player.getYPos()+yRel].isWalkable() )
 		Player.move(xRel, yRel);
 	movedorattacked = true;
 }
@@ -187,20 +187,20 @@ void handleKeys(TCOD_key_t k, TCODRandom *RNG)
 				break;
 			case '>':
 			case '.':
-				if( Player.getXPos() == levels[Player.getDepth()].DStairsLoc[0] && Player.getYPos() == levels[Player.getDepth()].DStairsLoc[1] )
+				if( Player.getXPos() == level->DStairsLoc[0] && Player.getYPos() == level->DStairsLoc[1] )
 				{
 					Player.descend();
 					level = &levels[Player.getDepth()];
-					if(!levels[Player.getDepth()].generated)
+					if(!level->generated)
 					{	
-					level->newMap(RNG);
+						level->newMap(RNG);
 					}
 					mapScreen->clear();
 				}
 				break;
 			case '<':
 			case ',':
-				if( Player.getXPos() == levels[Player.getDepth()].UStairsLoc[0] && Player.getYPos() == levels[Player.getDepth()].UStairsLoc[1] )
+				if( Player.getXPos() == level->UStairsLoc[0] && Player.getYPos() == level->UStairsLoc[1] )
 				{
 					Player.ascend();
 					level = &levels[Player.getDepth()];
