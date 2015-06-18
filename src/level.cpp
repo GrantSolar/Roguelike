@@ -11,6 +11,22 @@ short cLevel::getLevelNum()
 	return this->levelNum;
 }
 
+
+bool cLevel::isWalkable(int x, int y)
+{
+	return this->atMap[x][y].isWalkable();
+}
+
+bool cLevel::isTransparent(int x, int y)
+{
+	return this->atMap[x][y].isTransparent();
+}
+
+bool cLevel::isDiscovered(int x, int y)
+{
+	return this->atMap[x][y].isDiscovered();
+}
+
 //Places between 10 and 25 creatures randomly in level
 void cLevel::populate(TCODRandom *RNG)
 {

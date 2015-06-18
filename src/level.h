@@ -34,6 +34,9 @@ class cLevel
 
 
 		short getLevelNum();
+		bool isWalkable(int x, int y);
+		bool isTransparent(int x, int y);
+		bool isDiscovered(int x, int y);
 		void populate(TCODRandom *RNG);
 		void scatterItems(TCODRandom *RNG);
 		void randFillMap(TCODRandom *RNG);
