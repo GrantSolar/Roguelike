@@ -84,37 +84,37 @@ cEntity::cEntity()
 
 
 //Getters & Setters
-int cEntity::getXPos()			{return m_nXPos;}
-void cEntity::setXPos(int x)		{m_nXPos = x;}
+int cEntity::getXPos()                  {return m_nXPos;}
+void cEntity::setXPos(int x)            {m_nXPos = x;}
 
-int cEntity::getYPos()			{return m_nYPos;}
-void cEntity::setYPos(int y)		{m_nYPos = y;}
+int cEntity::getYPos()                  {return m_nYPos;}
+void cEntity::setYPos(int y)            {m_nYPos = y;}
 
-int cEntity::getID()				{return m_nID;}
-void cEntity::setID(int id)		{m_nID = id;}
+int cEntity::getID()                    {return m_nID;}
+void cEntity::setID(int id)             {m_nID = id;}
 
-int cEntity::getSightRange()		{return m_nSightRange;}
+int cEntity::getSightRange()            {return m_nSightRange;}
 
-int cEntity::getBaseStrength()	{return m_nBaseStrength;}
-void cEntity::setBaseStrength(int str)	{m_nBaseStrength = str;}
+int cEntity::getBaseStrength()          {return m_nBaseStrength;}
+void cEntity::setBaseStrength(int str)  {m_nBaseStrength = str;}
 
-int cEntity::getStrength()				{return m_nStrength;}
-void cEntity::setStrength(int str)		{m_nStrength = str;}
+int cEntity::getStrength()              {return m_nStrength;}
+void cEntity::setStrength(int str)      {m_nStrength = str;}
 
-int cEntity::getBaseDefence()		{return m_nBaseDefence;}
-void cEntity::setBaseDefence(int def)		{m_nBaseDefence = def;}
+int cEntity::getBaseDefence()           {return m_nBaseDefence;}
+void cEntity::setBaseDefence(int def)   {m_nBaseDefence = def;}
 
-int cEntity::getDefence()			{return m_nDefence;}
-void cEntity::setDefence(int def)	{m_nDefence = def;}
+int cEntity::getDefence()               {return m_nDefence;}
+void cEntity::setDefence(int def)       {m_nDefence = def;}
 
-int cEntity::getBaseHp()			{return m_nBaseHp;}
-void cEntity::setBaseHp(int hp)	{m_nBaseHp = hp;}
+int cEntity::getBaseHp()                {return m_nBaseHp;}
+void cEntity::setBaseHp(int hp)         {m_nBaseHp = hp;}
 
-int cEntity::getCurrHp()			{return m_nCurrHp;}
-void cEntity::setCurrHp(int hp)	{m_nCurrHp = hp;}
-int cEntity::getMaxHp()			{return m_nMaxHp;}
-void cEntity::setMaxHp(int hp)	{m_nMaxHp = hp;}
-void cEntity::adjHp(int x)		{m_nCurrHp += x;}
+int cEntity::getCurrHp()                {return m_nCurrHp;}
+void cEntity::setCurrHp(int hp)         {m_nCurrHp = hp;}
+int cEntity::getMaxHp()                 {return m_nMaxHp;}
+void cEntity::setMaxHp(int hp)          {m_nMaxHp = hp;}
+void cEntity::adjHp(int x)              {m_nCurrHp += x;}
 
 //Reduces target health
 void cEntity::attack(cEntity *attacked)
