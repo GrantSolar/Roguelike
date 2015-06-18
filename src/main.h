@@ -12,5 +12,6 @@ extern TCODConsole *stats;
 
 extern TCODRandom *PRNG;
 
+extern cLevel *level;
 extern bool pathMade;
 extern bool interrupt;

@@ -14,9 +14,9 @@ void cNPC::runAI()
 		//If enemy sees player, compute shortest path to player and try to attack
 		if(visible)
 		{
-			levels[Player.getDepth()].CalcPath->compute(this->getXPos(), this->getYPos(), Player.getXPos(), Player.getYPos());
+			level->CalcPath->compute(this->getXPos(), this->getYPos(), Player.getXPos(), Player.getYPos());
 			int pathx, pathy;
-			levels[Player.getDepth()].CalcPath->walk(&pathx, &pathy, false);
+			level->CalcPath->walk(&pathx, &pathy, false);
 			
 			//Attack if close enough
 			if(pathx == Player.getXPos() && pathy == Player.getYPos())
@@ -37,7 +37,7 @@ void cNPC::runAI()
 			{
 				randX = RNG->getInt(-1, 1);
 				randY = RNG->getInt(-1, 1);
-			} while( !levels[Player.getDepth()].atMap[this->getXPos()+randX][this->getYPos()+randY].isWalkable() );
+			} while( !level->isWalkable(this->getXPos()+randX, this->getYPos()+randY) );
 			this->move(randX, randY);
 		}
 }
@@ -49,10 +49,10 @@ void cNPC::die()
 void cNPC::remove()
 {
 	std::list<cNPC>::iterator targ;
-	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
+	for(targ = level->monsters.begin(); targ != level->monsters.end(); targ++)
 		if(this->equals(&*targ))
 		{
-			levels[Player.getDepth()].monsters.erase(targ);
+			level->monsters.erase(targ);
 			break;
 		}
 }
@@ -152,10 +152,10 @@ void cEntity::die()
 void cEntity::remove()
 {
 	std::list<cNPC>::iterator targ;
-	for(targ = levels[Player.getDepth()].monsters.begin(); targ != levels[Player.getDepth()].monsters.end(); targ++)
+	for(targ = level->monsters.begin(); targ != level->monsters.end(); targ++)
 		if(this->equals(&*targ))
 		{
-			levels[Player.getDepth()].monsters.erase(targ);
+			level->monsters.erase(targ);
 			break;
 		}
 }
@@ -189,7 +189,7 @@ bool cEntity::canSee(int x, int y)
 	//Iterates along line from target to player, for a more efficient field-of-vision
 	do
 	{
-		if(levels[Player.getDepth()].atMap[m_nXPos][m_nYPos].isTransparent() == false)
+		if( !level->isTransparent(m_nXPos, m_nYPos) )
 		{
 			return false;
 		}
@@ -255,18 +255,18 @@ void cPlayer::pickUp()
 {
 
 	std::list<cWeapon>::iterator weap = levels[Player.getDepth()].weapons.begin();
-	while(weap != levels[Player.getDepth()].weapons.end())
+	while(weap != level->weapons.end())
 	{
 		if( weap->getXPos() == Player.getXPos() && weap->getYPos() == Player.getYPos())
 		{
 			//Make a copy of existing weap, add to inventory then remove the old one
 			cWeapon newWeap = cWeapon(WeaponID++, weap->getLow(), weap->getHigh());
 
-			levels[Player.getDepth()].weapons.push_back(cWeapon(Weapons[equipped].getID(), Weapons[equipped].getLow(), Weapons[equipped].getHigh()));
+			level->weapons.push_back(cWeapon(Weapons[equipped].getID(), Weapons[equipped].getLow(), Weapons[equipped].getHigh()));
 			Player.Weapons[equipped] = cWeapon(WeaponID++, weap->getLow(), weap->getHigh());
 			
 			//Remove weapon from level
-			levels[Player.getDepth()].weapons.erase(weap);
+			level->weapons.erase(weap);
 
 			TCODConsole::blit(announce, 0, 0, MAP_WIDTH, ANNOUNCE_HEIGHT, TCODConsole::root, 0, SCREEN_HEIGHT-ANNOUNCE_HEIGHT);
 			break;
