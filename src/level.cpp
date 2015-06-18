@@ -48,7 +48,7 @@ void cLevel::populate(TCODRandom *RNG)
 			randY = RNG->getInt(1, MAP_HEIGHT-1);
 			newMonster.setXPos(randX);
 			newMonster.setYPos(randY);
-		} while( this->atMap[randX][randY].equals(tWall) );
+		} while( this->tileEquals(randX, randY, tWall) );
 		newMonster.setID(ID++);
 		this->monsters.push_back(newMonster);
 	}
@@ -277,7 +277,7 @@ int cLevel::findNext(bool getX)
 	for(int iii = 1; iii < MAP_HEIGHT; iii++)
 	for(int jjj = 1; jjj < MAP_WIDTH; jjj++)
 	{
-		if( this->atMap[jjj][iii].equals(tUnassigned) )
+		if( this->tileEquals(iii, jjj, tUnassigned) )
 			if(getX)
 				return jjj;
 			else
@@ -293,7 +293,7 @@ int cLevel::findLastX(int x, int y)
 	int last = 0;
 	for(int iii = x; iii < MAP_WIDTH; iii++)
 	{
-		if( this->atMap[iii][y].equals(tUnassigned) )
+		if( this->tileEquals(iii, y, tUnassigned) )
 			last = iii;
 		else
 			return last;
@@ -308,7 +308,7 @@ int cLevel::findLastY(int x, int y)
 	int last = 0;
 	for(int iii = y; iii < MAP_HEIGHT; iii++)
 	{
-		if( this->atMap[x][iii].equals(tUnassigned) )
+		if( this->tileEquals(x, iii, tUnassigned) )
 			last = iii;
 		else
 			return last;
@@ -377,7 +377,7 @@ void cLevel::generateMap(short playerX, short playerY, TCODRandom *RNG)
 		origSmooth();
 		smooth();
 		origSmooth();
-	} while(!this->atMap[playerX][playerY].isWalkable());
+	} while(!this->isWalkable(playerX, playerY));
 	
 }
 
@@ -403,7 +403,7 @@ void cLevel::generatePermissibility()
 	this->CalcMap = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-		this->CalcMap->setProperties(iii, jjj, this->atMap[iii][jjj].isTransparent(), this->atMap[iii][jjj].isWalkable());
+		this->CalcMap->setProperties(iii, jjj, this->isTransparent(iii, jjj), this->isWalkable(iii, jjj));
 
 	this->CalcPath = new TCODPath(this->CalcMap);
 }
@@ -437,7 +437,7 @@ void cLevel::calcFOV(TCODConsole *screen)
 	//Initialise *map with properties from game map
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-		map->setProperties(iii, jjj, this->atMap[iii][jjj].isTransparent(), this->atMap[iii][jjj].isWalkable());
+		map->setProperties(iii, jjj, this->isTransparent(iii, jjj), this->isWalkable(iii, jjj));
 
 	map->computeFov(Player.getXPos(), Player.getYPos(), SIGHT_RANGE, true, FOV_BASIC);
 
@@ -452,7 +452,7 @@ void cLevel::calcFOV(TCODConsole *screen)
 			screen->putCharEx(x, y, this->atMap[x][y].getSymbol(), this->atMap[x][y].getColour(), TCODColor::black);
 			this->atMap[x][y].setDiscovered(true);
 		}
-		else if(this->atMap[x][y].isDiscovered())
+		else if(this->isDiscovered(x, y))
 		{
 			screen->putCharEx(x, y, this->atMap[x][y].getSymbol(), TCODColor::grey, TCODColor::black);
 		}
@@ -505,7 +505,7 @@ void cLevel::calcFOVTorch(TCODConsole *screen)
 	//Initialise *map with properties from game map
 	for(int iii = 0; iii < MAP_WIDTH; iii++)
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
-		map->setProperties(iii, jjj, this->atMap[iii][jjj].isTransparent(), this->atMap[iii][jjj].isWalkable());
+		map->setProperties(iii, jjj, this->isTransparent(iii, jjj), this->isWalkable(iii, jjj));
 
 	map->computeFov(Player.getXPos(), Player.getYPos(), SIGHT_RANGE, true, FOV_BASIC);
 
@@ -531,7 +531,7 @@ void cLevel::calcFOVTorch(TCODConsole *screen)
 			screen->putCharEx(x, y, this->atMap[x][y].getSymbol(), this->atMap[x][y].getColour(), base);
 			this->atMap[x][y].setDiscovered(true);
 		}
-		else if(this->atMap[x][y].isDiscovered())
+		else if(this->isDiscovered(x, y))
 		{
 			screen->putCharEx(x, y, this->atMap[x][y].getSymbol(), this->atMap[x][y].getColour(), TCODColor::black);
 		}
