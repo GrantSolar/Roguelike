@@ -200,6 +200,7 @@ bool cEntity::canSee(int x, int y)
 
 cPlayer::cPlayer()
 {
+	std::string name;
 	m_nDepth = 0;
 	symbol = '@';
 

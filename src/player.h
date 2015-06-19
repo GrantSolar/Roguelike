@@ -14,6 +14,7 @@ class cEntity
 
 	public:
 
+		std::string name;
 		char symbol;
 		bool visible;
 

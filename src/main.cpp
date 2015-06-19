@@ -1,13 +1,13 @@
 #include <list>
 #include <math.h>
+#include <string>
+#include <iostream>
+#include <yaml-cpp/yaml.h>
 
 #include "libtcod.hpp"
 #include "player.h"
 #include "tile.h"
 #include "level.h"
-
-#include <string>
-#include <iostream>
 
 #define ANNOUNCE_HEIGHT 5
 #define STATS_WIDTH 20
@@ -17,11 +17,11 @@
 /*
 	layout of TCODConsoles
 	-----------------
-	|			| s |
-	|	map		| t |
-	|			| a	|
-	|-----------| t	|
-	|  announce | s	|
+	|           | s |
+	|   map     | t |
+	|           | a |
+	|-----------| t |
+	|  announce | s |
 	-----------------
 */
 
@@ -89,7 +89,8 @@ void draw(bool isPath, int pos)
 		//blit player last, so they don't get blitted over
 		mapScreen->putCharEx(Player.getXPos(), Player.getYPos(), Player.symbol, TCODColor::white, TCODColor::black);
 		
-		stats->print( 1, 1, "Health: %d/%d   ", Player.getCurrHp(), Player.getMaxHp() );
+		stats->print( 1, 1, Player.name.c_str());
+		stats->print( 1, 2, "Health: %d/%d   ", Player.getCurrHp(), Player.getMaxHp() );
 		stats->print( 1, 4, "Exp: %d/%d   ", Player.getExp(), Player.getExpNext() );
 
 		//Blit the auto-move path generated, if it exists
@@ -246,11 +247,17 @@ void init()
 	TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, &mouse, true);
 }*/
 
+void loadData()
+{
+	YAML::Node dataFile = YAML::LoadFile("data/data.yaml");
+	Player.name = dataFile["player"]["name"].as<std::string>();
+}
 
 int main()
 {
 
 	init();
+	loadData();
 	
 	Dummy.setID(-1);
 
