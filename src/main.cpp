@@ -25,9 +25,9 @@
 	-----------------
 */
 
-TCODConsole *mapScreen = new TCODConsole( MAP_WIDTH, MAP_HEIGHT );
-TCODConsole *announce = new TCODConsole( MAP_WIDTH, ANNOUNCE_HEIGHT );
-TCODConsole *stats = new TCODConsole( STATS_WIDTH, SCREEN_HEIGHT );
+//TCODConsole *mapScreen = new TCODConsole( MAP_WIDTH, MAP_HEIGHT );
+//TCODConsole *announce = new TCODConsole( MAP_WIDTH, ANNOUNCE_HEIGHT );
+//TCODConsole *stats = new TCODConsole( STATS_WIDTH, SCREEN_HEIGHT );
 
 TCODPath *path;
 
@@ -43,12 +43,12 @@ bool interrupt = false;
 
 
 //Clears announcement panel of screen, then blits new message
-void announcement(const char *message, ...)
+/*void announcement(const char *message, ...)
 {
 	announce->clear();
 	announce->print(1,1, message);
 	TCODConsole::blit(announce, 0, 0, MAP_WIDTH, ANNOUNCE_HEIGHT, TCODConsole::root, 0, SCREEN_HEIGHT-ANNOUNCE_HEIGHT);
-}
+}*/
 
 
 //Finds an enemy at given co-ords, if one exists
@@ -249,7 +249,7 @@ void init()
 
 void loadData()
 {
-	YAML::Node dataFile = YAML::LoadFile("data/data.yaml");
+	YAML::Node dataFile = YAML::LoadFile("data/player_save.yaml");
 	Player.name = dataFile["player"]["name"].as<std::string>();
 }
 
@@ -302,7 +302,7 @@ int main()
 
 		//Update screen
 		mapScreen->clear();
-		level->calcFOV(mapScreen);
+		level->calcFOV(Player.getXPos(), Player.getYPos(), mapScreen);
 		draw(pathMade, 0);
 
 		//Blocking key input

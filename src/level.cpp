@@ -430,7 +430,7 @@ void cLevel::newMap(TCODRandom *RNG)
 //Computes FOV using libtcod computeFov
 //If an element of TCODMap is in FOV, print corresponding element to screen
 //Previously discovered but out of FOV tiles are printed in grey, undiscovered tiles are not printed
-void cLevel::calcFOV(TCODConsole *screen)
+TCODMap cLevel::calcFOV(int x, int y, TCODConsole *screen)
 {
 	TCODMap *map = new TCODMap(MAP_WIDTH, MAP_HEIGHT);
 
@@ -439,22 +439,22 @@ void cLevel::calcFOV(TCODConsole *screen)
 	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
 		map->setProperties(iii, jjj, this->isTransparent(iii, jjj), this->isWalkable(iii, jjj));
 
-	map->computeFov(Player.getXPos(), Player.getYPos(), SIGHT_RANGE, true, FOV_BASIC);
+	map->computeFov(x, y, SIGHT_RANGE, true, FOV_BASIC);
 
 
 	//If an element of TCODMap is in FOV, print corresponding element to screen in colour
 	//If discovered but out of FOV, print in grey
-	for(int x = 0; x < MAP_WIDTH; x++)
-	for(int y = 0; y < MAP_HEIGHT; y++)
+	for(int iii = 0; iii < MAP_WIDTH; iii++)
+	for(int jjj = 0; jjj < MAP_HEIGHT; jjj++)
 	{
-		if(map->isInFov(x,y))
+		if(map->isInFov(iii,jjj))
 		{
-			screen->putCharEx(x, y, this->atMap[x][y].getSymbol(), this->atMap[x][y].getColour(), TCODColor::black);
-			this->atMap[x][y].setDiscovered(true);
+			//screen->putCharEx(iii, jjj, this->atMap[iii][jjj].getSymbol(), this->atMap[iii][jjj].getColour(), TCODColor::black);
+			this->atMap[iii][jjj].setDiscovered(true);
 		}
-		else if(this->isDiscovered(x, y))
+		else if(this->isDiscovered(iii, jjj))
 		{
-			screen->putCharEx(x, y, this->atMap[x][y].getSymbol(), TCODColor::grey, TCODColor::black);
+			//screen->putCharEx(iii, jjj, this->atMap[iii][jjj].getSymbol(), TCODColor::grey, TCODColor::black);
 		}
 
 	}
@@ -466,7 +466,7 @@ void cLevel::calcFOV(TCODConsole *screen)
 	{
 		if( map->isInFov(monst->getXPos(), monst->getYPos()) && monst->getCurrHp() > 0)
 		{
-			screen->putCharEx(monst->getXPos(), monst->getYPos(), 'w', TCODColor::red, TCODColor::black);
+			//screen->putCharEx(monst->getXPos(), monst->getYPos(), 'w', TCODColor::red, TCODColor::black);
 			if( !(monst->visible) )
 			{
 				monst->visible = true;
@@ -483,7 +483,7 @@ void cLevel::calcFOV(TCODConsole *screen)
 	{
 		if( map->isInFov(weap->getXPos(), weap->getYPos()))
 		{
-			screen->putCharEx(weap->getXPos(), weap->getYPos(), '/', TCODColor::yellow, TCODColor::black);
+			//screen->putCharEx(weap->getXPos(), weap->getYPos(), '/', TCODColor::yellow, TCODColor::black);
 		}
 		weap++;
 	}
